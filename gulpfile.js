@@ -1,11 +1,12 @@
 var gulp = require('gulp');
+var gulpsync = require('gulp-sync')(gulp);
 
-var jshint = require('gulp-jshint');
+//var jshint = require('gulp-jshint');
 var sass = require('gulp-sass');
 var imagemin = require('gulp-imagemin');
 var browserify = require('browserify');
 var uglify = require('gulp-uglify');
-var minifyHTML = require('gulp-minify-html');
+var htmlmin = require('gulp-htmlmin');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var source = require('vinyl-source-stream');
@@ -17,11 +18,11 @@ gulp.task('bower', function() {
 });
 
 // JavaScript linting task
-gulp.task('jshint', function() {
+/*gulp.task('jshint', function() {
   return gulp.src('site/js/*.js')
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
-});
+});*/
 
 // Compile Sass task
 gulp.task('sass', function() {
@@ -33,7 +34,7 @@ gulp.task('sass', function() {
 // Minify index
 gulp.task('html', function() {
   return gulp.src('site/index.html')
-    .pipe(minifyHTML())
+    .pipe(htmlmin({collapseWhitespace: true}))
     .pipe(gulp.dest('build/'));
 });
 
@@ -71,4 +72,4 @@ gulp.task('watch', function() {
 gulp.task('default', ['jshint', 'sass', 'watch']);
 
 //Build task
-gulp.task('build', gulpsync.async(['jshint', ['concatHTML', 'html'], 'scripts', ['sass','styles'], 'images']));
+gulp.task('build', gulpsync.async([[/*'concatHTML',*/'html'], 'scripts', ['sass','styles'], 'images']));
