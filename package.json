@@ -1,0 +1,23 @@
+{
+  "name": "flappy-bird-main",
+  "version": "1.0.0",
+  "description": "in-broswer version of flappy bird game",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpcoxjr/flappy-bird-main.git"
+  },
+  "author": "Bruce Patrick Cox Jr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bpcoxjr/flappy-bird-main/issues"
+  },
+  "homepage": "https://github.com/bpcoxjr/flappy-bird-main#readme"
+}
