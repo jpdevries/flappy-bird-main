@@ -72,4 +72,4 @@ gulp.task('watch', function() {
 gulp.task('default', ['jshint', 'sass', 'watch']);
 
 //Build task
-gulp.task('build', gulpsync.async([['html'], 'scripts', [,'styles'], 'images']));
+gulp.task('build', gulpsync.async(['html', 'scripts', 'styles', 'images']));
