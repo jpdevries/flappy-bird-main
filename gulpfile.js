@@ -25,17 +25,17 @@ gulp.task('bower', function() {
 });*/
 
 // Compile Sass task
-gulp.task('sass', function() {
+/*gulp.task('sass', function() {
   return gulp.src('site/scss/*.scss')
     .pipe(sass())
     .pipe(gulp.dest('site/css'));
-});
+});*/
 
 // Minify index
 gulp.task('html', function() {
   return gulp.src('site/index.html')
     .pipe(htmlmin({collapseWhitespace: true}))
-    .pipe(gulp.dest('build/'));
+    .pipe(gulp.dest('site/'));
 });
 
 // JavaScript build task, removes whitespace and concatenates all files
@@ -45,21 +45,21 @@ gulp.task('scripts', function() {
     .pipe(source('app.js'))
     .pipe(buffer())
     .pipe(uglify())
-    .pipe(gulp.dest('build/js'));
+    .pipe(gulp.dest('site/js'));
 });
 
 // Styles build task, concatenates all the files
 gulp.task('styles', function() {
   return gulp.src('site/css/*.css')
     .pipe(concat('styles.css'))
-    .pipe(gulp.dest('build/css'));
+    .pipe(gulp.dest('site/css'));
 });
 
 // Image optimization task
 gulp.task('images', function() {
   return gulp.src('site/img/*')
     .pipe(imagemin())
-    .pipe(gulp.dest('build/img'));
+    .pipe(gulp.dest('site/img'));
 });
 
 // Watch task
@@ -72,4 +72,4 @@ gulp.task('watch', function() {
 gulp.task('default', ['jshint', 'sass', 'watch']);
 
 //Build task
-gulp.task('build', gulpsync.async([[/*'concatHTML',*/'html'], 'scripts', ['sass','styles'], 'images']));
+gulp.task('build', gulpsync.async([['html'], 'scripts', [,'styles'], 'images']));
