@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var gulpsync = require('gulp-sync')(gulp);
 
-//var jshint = require('gulp-jshint');
+var jshint = require('gulp-jshint');
 var sass = require('gulp-sass');
 var imagemin = require('gulp-imagemin');
 var browserify = require('browserify');
@@ -18,11 +18,11 @@ gulp.task('bower', function() {
 });
 
 // JavaScript linting task
-/*gulp.task('jshint', function() {
-  return gulp.src('site/js/*.js')
+gulp.task('jshint', function() {
+  return gulp.src('site/js/main.js')
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
-});*/
+});
 
 // Compile Sass task
 /*gulp.task('sass', function() {
@@ -72,4 +72,4 @@ gulp.task('watch', function() {
 gulp.task('default', ['jshint', 'sass', 'watch']);
 
 //Build task
-gulp.task('build', gulpsync.async(['html', 'scripts', 'styles', 'images']));
+gulp.task('build', gulpsync.async(['jshint', 'html', 'scripts', 'styles', 'images']));
