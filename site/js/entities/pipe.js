@@ -1,6 +1,6 @@
 var graphicsComponent = require("../components/graphics/pipe");
 
-var Pipe = function {
+var Pipe = function() {
 	console.log("Creating Pipe entity");
 
 	var graphics =  new graphicsComponent.PipeGraphicsComponent(this);
