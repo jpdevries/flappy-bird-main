@@ -13,11 +13,16 @@ GraphicsSystem.prototype.run = function() {
 
 GraphicsSystem.prototype.tick = function() {
     //Set the canvas to the correct size if the window is resized.
-    if (this.canvas.width != this.canvas.offsetWidth ||
-        this.canvas.height != this.canvas.offsetHeight) {
-        this.canvas.width = this.canvas.offsetWidth;
-        this.canvas.height = this.canvas.offsetHeight;
+    var canvas = this.canvas;
+    handleResize();
+    window.onresize = function() {
+        handleResize();
     }
+    function handleResize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+      
 
     //Clear the canvas, top-left to bottom-right.
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);

@@ -32,11 +32,11 @@ gulp.task('jshint', function() {
 });*/
 
 // Minify index
-gulp.task('html', function() {
+/*gulp.task('html', function() {
   return gulp.src('site/index.html')
     .pipe(htmlmin({collapseWhitespace: true}))
     .pipe(gulp.dest('site/'));
-});
+});*/
 
 // JavaScript build task, removes whitespace and concatenates all files
 gulp.task('scripts', function() {
@@ -72,4 +72,4 @@ gulp.task('watch', function() {
 gulp.task('default', ['jshint', 'sass', 'watch']);
 
 //Build task
-gulp.task('build', gulpsync.async(['jshint', 'html', 'scripts', 'styles', 'images']));
+gulp.task('build', gulpsync.async(['jshint', 'scripts', 'styles', 'images']));

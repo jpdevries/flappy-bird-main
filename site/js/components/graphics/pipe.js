@@ -5,7 +5,7 @@ var PipeGraphicsComponent = function(entity) {
 PipeGraphicsComponent.prototype.draw = function(context) {
     console.log("Drawing a pipe");
     //Start drawing a new path by calling the beginPath function.
-    context.beginPath();
+    //context.beginPath();
     //use fillStyle to tell the computer what color the pipe should be
     context.fillStyle = "green";
     //Use fillRect function to tell computer where to draw the pipe & what size
@@ -15,3 +15,4 @@ PipeGraphicsComponent.prototype.draw = function(context) {
 };
 
 exports.PipeGraphicsComponent = PipeGraphicsComponent;
+
