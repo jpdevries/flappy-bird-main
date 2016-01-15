@@ -16,7 +16,7 @@ PipeGraphicsComponent.prototype.draw = function(context) {
     var canvas = document.getElementById("main-canvas");
     var context = canvas.getContext("2d");
     var image = document.getElementById("pipe");
-    context.drawImage(image, 3, 0, 0.2, 1.5);
+    context.drawImage(image, 3, 0, 0.2, .5);
 
 
     //Move the canvas to the x & y cordinates defined in position variable.
