@@ -10,12 +10,14 @@ PipeGraphicsComponent.prototype.draw = function(context) {
     //Save a snapshot of the current transformation state.
     context.save();
 
+    //Move the canvas to the x & y cordinates defined in position variable.
+    context.translate(position.x, position.y);
+
     var canvas = document.getElementById("main-canvas");
     var context = canvas.getContext("2d");
     var image = document.getElementById("pipe");
-    context.drawImage(image, 0.5, 0.75, 0.2, 1.5);
+    context.drawImage(image, 3, 0, 0.2, 1.5);
 
-    //(2-Math.random()/2)
 
     //Move the canvas to the x & y cordinates defined in position variable.
     //context.translate(position.x, position.y);
