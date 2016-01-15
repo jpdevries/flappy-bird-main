@@ -21,11 +21,10 @@ PipeGraphicsComponent.prototype.draw = function(context) {
     var canvas = document.getElementById("main-canvas");
     var context = canvas.getContext("2d");
     var image = document.getElementById("pipe");
-<<<<<<< HEAD
+
     context.drawImage(image, 3, 0, 0.2, .5);
-=======
+
     context.drawImage(image, 1, 0, 0.2, 1);
->>>>>>> 5ad39b62dc0130cd98daaad3776a30f941e03c88
 
     context.restore();
 
