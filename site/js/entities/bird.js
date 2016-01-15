@@ -2,7 +2,7 @@ var graphicsComponent = require("../components/graphics/bird");
 var physicsComponent = require("../components/physics/physics");
 
 var Bird = function() {
-    console.log("Creating Bird entity");
+    //console.log("Creating Bird entity");
 
     var physics = new physicsComponent.PhysicsComponent(this);
     physics.position.y = 0.5;
@@ -10,7 +10,7 @@ var Bird = function() {
 
     var graphics = new graphicsComponent.BirdGraphicsComponent(this);
     this.components = {
-    	physics: physics, 
+    	physics: physics,
     	graphics: graphics
     };
 };
