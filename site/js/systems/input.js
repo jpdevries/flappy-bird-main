@@ -7,7 +7,7 @@ var InputSystem = function(entities) {
 
 InputSystem.prototype.run = function() {
     this.canvas.addEventListener('click', this.onClick.bind(this));
-    this.canvas.addEventListener('onTouch', this.onTouch.bind(this));
+    //this.canvas.addEventListener('onTouch', this.ontouchstart.bind(this));
 };
 
 InputSystem.prototype.onClick = function() {
