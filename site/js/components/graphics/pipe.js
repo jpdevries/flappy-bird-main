@@ -42,15 +42,3 @@ PipeGraphicsComponent.prototype.draw = function(context) {
 };
 
 exports.PipeGraphicsComponent = PipeGraphicsComponent;
-
-
-
-
-
-
-git checkout master
-git fetch
-git pull
-git branch -D gh-pages
-git checkout -b gh-pages
-git push --force

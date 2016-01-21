@@ -1,4 +1,5 @@
 var InputSystem = function(entities) {
+    console.log('InputSystem');
     this.entities = entities;
 
     // Canvas is where we get input from
@@ -6,6 +7,7 @@ var InputSystem = function(entities) {
 };
 
 InputSystem.prototype.run = function() {
+    console.log('run');
     this.canvas.addEventListener('click', this.onClick.bind(this));
     this.canvas.addEventListener('keydown', this.onkeydown.bind(this));
 };
