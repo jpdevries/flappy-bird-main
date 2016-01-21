@@ -7,12 +7,21 @@ var InputSystem = function(entities) {
 
 InputSystem.prototype.run = function() {
     this.canvas.addEventListener('click', this.onClick.bind(this));
-    //this.canvas.addEventListener('onTouch', this.ontouchstart.bind(this));
+    this.canvas.addEventListener('keydown', this.onkeydown.bind(this));
 };
 
 InputSystem.prototype.onClick = function() {
+	console.log("click detected!");
     var bird = this.entities[0];
     bird.components.physics.velocity.y = 0.4;
+};
+
+InputSystem.prototype.onkeydown = function(e) {
+	if (e.keyCode == 32) {
+	console.log("spacebar pressed!");
+	var bird = this.entities[0];
+	bird.components.physics.velocity.y = 0.4;
+	}
 };
 
 exports.InputSystem = InputSystem;

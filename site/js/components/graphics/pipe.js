@@ -6,20 +6,23 @@ PipeGraphicsComponent.prototype.draw = function(context) {
     var position = this.entity.components.physics.position;
     var flip = this.entity.flip;
 
+    //console.log("Drawing a pipe",position);
+
     //Save a snapshot of the current transformation state.
     context.save();
 
     //Move the canvas to the x & y cordinates defined in position variable.
     context.translate(position.x, position.y);
 
-
     if(flip) {
       context.scale(1,-1);
     }
 
+    var canvas = document.getElementById("main-canvas");
+    var context = canvas.getContext("2d");
     var image = document.getElementById("pipe");
 
-    context.drawImage(image, 0, 0, 0.2, 1);
+    context.drawImage(image, 1, 0, 0.2, 1);
 
     context.restore();
 
@@ -39,3 +42,15 @@ PipeGraphicsComponent.prototype.draw = function(context) {
 };
 
 exports.PipeGraphicsComponent = PipeGraphicsComponent;
+
+
+
+
+
+
+git checkout master
+git fetch
+git pull
+git branch -D gh-pages
+git checkout -b gh-pages
+git push --force
