@@ -17,7 +17,6 @@ InputSystem.prototype.onClick = function() {
 
 InputSystem.prototype.onkeydown = function(e) {
 	if (e.keyCode ==32) {
-		console.log("Spacebar pressed!");
 		var bird = this.entities[0];
 		bird.components.physics.velocity.y = 0.4;
 	}
