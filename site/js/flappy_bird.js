@@ -9,6 +9,10 @@ var bird = require('./entities/bird');
 var pipeGap = 0.25;
 
 var FlappyBird = function() {
+    var p1Y, p2Y;
+    p1Y = p2Y = randomRange(0.25,0.65);
+
+    p1Y += pipeGap;
 
     this.entities = [new bird.Bird()];
     //this.entities = [new bird.Bird(), new pipe.Pipe(p1Y), new pipe.Pipe(p2Y,true)];

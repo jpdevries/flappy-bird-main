@@ -7,8 +7,8 @@ var Pipe = function(position,flip) {
 
 	var physics = new physicsComponent.PhysicsComponent(this);
     physics.position.x = position.x;
-	physics.position.y = position.y;
-    physics.acceleration.x = -0.07;
+		physics.position.y = position.y;
+    physics.acceleration.x = -0.1;
 
 
 	var graphics = new graphicsComponent.PipeGraphicsComponent(this);

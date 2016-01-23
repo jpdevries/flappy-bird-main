@@ -19,19 +19,15 @@ PipeSystem.prototype.pause = function() {
 }
 
 PipeSystem.prototype.tick = function() {
-
-  var pipeGap = .2;
-
   var position = {
     x:1.5,
-    y:(1 - pipeGap) * Math.random()
+    y:0.6
   };
+  this.entities.push(new pipe.Pipe(position,true));
 
-  this.entities.push(new pipe.Pipe(position, true));
-                                                                          
+  position.y += .25;
 
-  this.entities.push(new pipe.Pipe(position, false));
-  }
+  this.entities.push(new pipe.Pipe(position,false));
 };
 
 exports.PipeSystem = PipeSystem;
