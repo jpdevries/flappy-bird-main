@@ -1,6 +1,6 @@
 var graphicsComponent = require("../components/graphics/pipe");
 var physicsComponent = require("../components/physics/physics");
-var collisionComponent = require("..components.collision/rect");
+var collisionComponent = require("../components/collision/rect");
 
 var Pipe = function(position,flip) {
 	this.flip = (typeof(flip) == 'undefined') ? false : flip;
@@ -13,7 +13,7 @@ var Pipe = function(position,flip) {
 
 
 	var graphics = new graphicsComponent.PipeGraphicsComponent(this);
-	var collision = new collisionComponent.RectCollisionComponent(this, 0.02);
+	var collision = new collisionComponent.RectCollisionComponent(this, {x:0.02,y:1});
 	collision.onCollision = this.onCollision.bind(this);
 
 	this.components = {
@@ -21,9 +21,13 @@ var Pipe = function(position,flip) {
 		graphics: graphics,
 		collision: collision
 	};
-Pipe.prototype.onCollision = function(0.2, 1) {
-	console.log("Pipe collided with entity:", entity);
-    };
+};
+
+Pipe.prototype.onCollision = function(entity,pipeWidth,pipeHeight) {
+	return;
+	pipeWidth = (typeof(pipeWidth) == 'undefined') ? 0.2 : pipeWidth;
+	pipeHeight = (typeof(pipeHeight) == 'undefined') ? 1 : pipeHeight;
+	console.log("Pipe collided with entity:",entity);
 };
 
 exports.Pipe = Pipe;
