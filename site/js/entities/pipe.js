@@ -1,6 +1,6 @@
 var graphicsComponent = require("../components/graphics/pipe");
 var physicsComponent = require("../components/physics/physics");
-var collisionComponent = require("..components.collision/rect");
+var collisionComponent = require("../components/collision/rect");
 
 var Pipe = function(position,flip) {
 	this.flip = (typeof(flip) == 'undefined') ? false : flip;
