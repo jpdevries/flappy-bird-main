@@ -14,7 +14,7 @@ var Pipe = function(position,flip) {
 
 	var graphics = new graphicsComponent.PipeGraphicsComponent(this);
 	var collision = new collisionComponent.RectCollisionComponent(this, {x:0.02,y:1});
-	collision.onCollision = this.onCollision.bind(this);
+	//collision.onCollision = this.onCollision.bind(this);
 
 	this.components = {
 		physics: physics,
@@ -24,7 +24,6 @@ var Pipe = function(position,flip) {
 };
 
 Pipe.prototype.onCollision = function(entity,pipeWidth,pipeHeight) {
-	return;
 	pipeWidth = (typeof(pipeWidth) == 'undefined') ? 0.2 : pipeWidth;
 	pipeHeight = (typeof(pipeHeight) == 'undefined') ? 1 : pipeHeight;
 	console.log("Pipe collided with entity:",entity);
