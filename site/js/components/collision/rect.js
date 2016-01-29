@@ -1,6 +1,7 @@
 var RectCollisionComponent = function(entity, size) {
     this.entity = entity;
     this.size = size;
+    console.log(this.size);
     this.type = 'rect';
 };
 
