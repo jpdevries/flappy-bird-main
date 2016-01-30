@@ -1,4 +1,6 @@
 var GraphicsSystem = function(entities) {
+    var that = this;
+
     this.entities = entities;
     //Canvas is WHERE we draw to. This part fetches the canvas element.
     this.canvas = document.getElementById('main-canvas');
@@ -7,10 +9,14 @@ var GraphicsSystem = function(entities) {
     this.context = this.canvas.getContext('2d');
 
     this.showBoundingBox = false;
-    this.showCollisionDetection = false;
+    this.showCollisionDetection = true;
 
     var canvas = this.canvas,
     offcanvas = this.offcanvas;
+
+    document.body.addEventListener('keydown',function(e){ // when the space bar is pressed
+      that.showCollisionDetection = !that.showCollisionDetection;
+    });
 
     handleResize();
     window.onresize = function() {
