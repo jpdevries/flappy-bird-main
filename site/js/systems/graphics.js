@@ -2,11 +2,12 @@ var GraphicsSystem = function(entities) {
     this.entities = entities;
     //Canvas is WHERE we draw to. This part fetches the canvas element.
     this.canvas = document.getElementById('main-canvas');
-    this.offcanvas = document.getElementById('offcanvas');
+    this.offcanvas = document.createElement('canvas');
     //Context is WHAT we draw to
     this.context = this.canvas.getContext('2d');
 
     this.showBoundingBox = false;
+    this.showCollisionDetection = false;
 
     var canvas = this.canvas,
     offcanvas = this.offcanvas;
@@ -147,6 +148,14 @@ GraphicsSystem.prototype.tick = function() {
     }
 
     this.context.restore();
+
+    if(this.showCollisionDetection) {
+      this.context.putImageData( // if requested, show the hidden collisision detection in the top left
+        offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height),
+        0,
+        0
+      );
+    }
 
     //Continue the graphics rendering loop.
     window.requestAnimationFrame(this.tick.bind(this));
