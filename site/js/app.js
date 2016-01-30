@@ -1,127 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var CircleCollisionComponent = function(entity, radius) {
-    this.entity = entity;
-    this.radius = radius;
-    this.type = 'circle';
-};
-
-CircleCollisionComponent.prototype.collidesWith = function(entity) {
-    /*if (entity.components.collision.type == 'circle') {
-        return this.collideCircle(entity);
-    }
-    else */if (entity.components.collision.type == 'rect') {
-        return this.collideRect(entity);
-    }
-    return false;
-};
-
-CircleCollisionComponent.prototype.collideCircle = function(entity) {
-    var positionA = this.entity.components.physics.position;
-    var positionB = entity.components.physics.position;
-
-    var radiusA = this.radius;
-    var radiusB = entity.components.collision.radius;
-
-    var diff = {x: (positionA.x - positionB.x),
-                y: (positionA.y - positionB.y)};
-
-    var distanceSquared = (diff.x * diff.x) + (diff.y * diff.y);
-    var radiusSum = radiusA + radiusB;
-    return false;
-    return distanceSquared < (radiusSum * radiusSum);
-};
-
-CircleCollisionComponent.prototype.collideRect = function(entity) {
-    var clamp = function(value, low, high) {
-      //console.log(value,low,high);
-      if (value < low) {
-        return low;
-      }
-      if (value > high) {
-        return high;
-      }
-      return value;
-    };
-
-    var positionA = this.entity.components.physics.position;
-    var positionB = {x:entity.components.physics.position.x,y:entity.components.physics.position.y};
-    var sizeB = entity.components.collision.size;
-
-    if(entity.flip) positionB.y = 1 - positionB.y;
-
-    //console.log(positionB);
-    //console.log(positionA.x, positionB.x - sizeB.x / 2,positionB.x + sizeB.x / 2);
-    //console.log(positionA.y, positionB.y - sizeB.y / 2,positionB.y + sizeB.y / 2);
-
-    var closest = {
-        x: clamp(positionA.x, positionB.x - sizeB.x / 2,
-                 positionB.x + sizeB.x / 2),
-        y: clamp(positionA.y, positionB.y - sizeB.y / 2,
-                 positionB.y + sizeB.y / 2)
-    };
-
-
-    var radiusA = this.radius;
-
-    var diff = {x: positionA.x - closest.x,
-                y: positionA.y - closest.y};
-
-    var distanceSquared = diff.x * diff.x + diff.y * diff.y;
-    //console.log(positionA,positionB,closest,diff);
-    //console.log(diff, distanceSquared, radiusA * radiusA);
-    //console.log(distanceSquared, radiusA * radiusA);
-    //return false;
-    return distanceSquared < radiusA * radiusA;
-};
-
-exports.CircleCollisionComponent = CircleCollisionComponent;
-
-},{}],2:[function(require,module,exports){
-var RectCollisionComponent = function(entity, size) {
-    this.entity = entity;
-    this.size = size;
-    console.log(this.size);
-    this.type = 'rect';
-};
-
-RectCollisionComponent.prototype.collidesWith = function(entity) {
-    if (entity.components.collision.type == 'circle') {
-        return this.collideCircle(entity);
-    }
-    else if (entity.components.collision.type == 'rect') {
-        return this.collideRect(entity);
-    }
-    return false;
-};
-
-RectCollisionComponent.prototype.collideCircle = function(entity) {
-    return entity.components.collision.collideRect(this.entity);
-};
-
-RectCollisionComponent.prototype.collideRect = function(entity) {
-    var positionA = this.entity.components.physics.position;
-    var positionB = entity.components.physics.position;
-
-    var sizeA = this.size;
-    var sizeB = entity.components.collision.size;
-
-    var leftA = positionA.x - sizeA.x / 2;
-    var rightA = positionA.x + sizeA.x / 2;
-    var bottomA = positionA.y - sizeA.y / 2;
-    var topA = positionA.y + sizeA.y / 2;
-
-    var leftB = positionB.x - sizeB.x / 2;
-    var rightB = positionB.x + sizeB.x / 2;
-    var bottomB = positionB.y - sizeB.y / 2;
-    var topB = positionB.y + sizeB.y / 2;
-
-    return !(leftA > rightB || leftB > rightA ||
-             bottomA > topB || bottomB > topA);
-};
-
-exports.RectCollisionComponent = RectCollisionComponent;
-
-},{}],3:[function(require,module,exports){
 var BirdGraphicsComponent = function(entity) {
     this.entity = entity;
 };
@@ -163,7 +40,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
 
 exports.BirdGraphicsComponent = BirdGraphicsComponent;
 
-},{}],4:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var PipeGraphicsComponent = function(entity) {
     this.entity = entity;
 };
@@ -206,7 +83,7 @@ PipeGraphicsComponent.prototype.draw = function(context) {
 
 exports.PipeGraphicsComponent = PipeGraphicsComponent;
 
-},{}],5:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var PhysicsComponent = function(entity) {
     this.entity = entity;
 
@@ -233,11 +110,9 @@ PhysicsComponent.prototype.update = function(delta) {
 };
 
 exports.PhysicsComponent = PhysicsComponent;
-},{}],6:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var graphicsComponent = require("../components/graphics/bird");
 var physicsComponent = require("../components/physics/physics");
-var collisionComponent = require("../components/collision/circle");
-
 
 var Bird = function() {
     var physics = new physicsComponent.PhysicsComponent(this);
@@ -245,57 +120,40 @@ var Bird = function() {
     physics.acceleration.y = -0.75;
 
     var graphics = new graphicsComponent.BirdGraphicsComponent(this);
-    var collision = new collisionComponent.CircleCollisionComponent(this, 0.02);
-    //collision.onCollision = this.onCollision.bind(this);
 
     this.components = {
     	physics: physics,
-    	graphics: graphics,
-    	collision: collision
-    };
-};
+    	graphics: graphics
 
-Bird.prototype.onCollision = function(entity) {
-	console.log("Bird collided with entity:", entity);
+    };
 };
 
 exports.Bird = Bird;
 
-},{"../components/collision/circle":1,"../components/graphics/bird":3,"../components/physics/physics":5}],7:[function(require,module,exports){
+},{"../components/graphics/bird":1,"../components/physics/physics":3}],5:[function(require,module,exports){
 var graphicsComponent = require("../components/graphics/pipe");
 var physicsComponent = require("../components/physics/physics");
-var collisionComponent = require("../components/collision/rect");
 
 var Pipe = function(position,flip) {
 	this.flip = (typeof(flip) == 'undefined') ? false : flip;
-	//console.log("Creating Pipe entity",flip);
 
 	var physics = new physicsComponent.PhysicsComponent(this);
     physics.position.x = position.x;
-	physics.position.y = position.y;
+		physics.position.y = position.y;
     physics.acceleration.x = -0.07;
 
 
 	var graphics = new graphicsComponent.PipeGraphicsComponent(this);
-	var collision = new collisionComponent.RectCollisionComponent(this, {x:0.02,y:1});
-	//collision.onCollision = this.onCollision.bind(this);
 
 	this.components = {
 		physics: physics,
-		graphics: graphics,
-		collision: collision
+		graphics: graphics
 	};
-};
-
-Pipe.prototype.onCollision = function(entity,pipeWidth,pipeHeight) {
-	pipeWidth = (typeof(pipeWidth) == 'undefined') ? 0.2 : pipeWidth;
-	pipeHeight = (typeof(pipeHeight) == 'undefined') ? 1 : pipeHeight;
-	console.log("Pipe collided with entity:",entity);
 };
 
 exports.Pipe = Pipe;
 
-},{"../components/collision/rect":2,"../components/graphics/pipe":4,"../components/physics/physics":5}],8:[function(require,module,exports){
+},{"../components/graphics/pipe":2,"../components/physics/physics":3}],6:[function(require,module,exports){
 Math.randomRange = function(min,max) {
   	  return min + (Math.random() * (max-min));
 };
@@ -329,16 +187,14 @@ FlappyBird.prototype.run = function() {
 
 exports.FlappyBird = FlappyBird;
 
-},{"./entities/bird":6,"./systems/graphics":10,"./systems/input":11,"./systems/physics":12,"./systems/pipe_system":13}],9:[function(require,module,exports){
+},{"./entities/bird":4,"./systems/graphics":8,"./systems/input":9,"./systems/physics":10,"./systems/pipe_system":11}],7:[function(require,module,exports){
 var flappyBird = require('./flappy_bird');
 
 document.addEventListener('DOMContentLoaded', function() {
     var app = new flappyBird.FlappyBird();
     app.run();
 });
-},{"./flappy_bird":8}],10:[function(require,module,exports){
-//var collisionSystem = require("./collision");
-
+},{"./flappy_bird":6}],8:[function(require,module,exports){
 var GraphicsSystem = function(entities) {
     this.entities = entities;
     //Canvas is WHERE we draw to. This part fetches the canvas element.
@@ -346,6 +202,8 @@ var GraphicsSystem = function(entities) {
     this.offcanvas = document.getElementById('offcanvas');
     //Context is WHAT we draw to
     this.context = this.canvas.getContext('2d');
+
+    this.showBoundingBox = false;
 
     var canvas = this.canvas,
     offcanvas = this.offcanvas;
@@ -355,8 +213,8 @@ var GraphicsSystem = function(entities) {
         handleResize();
     }
     function handleResize() {
-        canvas.width = offcanvas.width = window.innerWidth;
-        canvas.height = offcanvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
 };
 
@@ -366,69 +224,126 @@ GraphicsSystem.prototype.run = function() {
 };
 
 GraphicsSystem.prototype.tick = function() {
-    //Set the canvas to the correct size if the window is resized.
+    var that = this; // so we can reference "this" from nested namespaces
+
     var canvas = this.canvas,
-    offcanvas = this.offcanvas;
+    offcanvas = this.offcanvas,
+    offcanvasContext = offcanvas.getContext('2d');
 
-    var offcanvasContext = offcanvas.getContext('2d');
+    // start fresh for our visual canvas and our hidden hit detection offcanvas
+    this.clearContext(canvas);
+    this.clearContext(offcanvas);
 
-    offcanvasContext.clearRect(0,0,offcanvas.width,offcanvas.height);
+    var bird = this.entities[0],
+    cut = { // the section of the stage we are cutting out. we only take the bounding box of the bird for both our subjects (the bird and the pipes)
+      x:(canvas.width/2),
+      y:(1-bird.components.physics.position.y)*canvas.height,
+      width:120,
+      height:120
+    };
 
-    // offcanvasContext.fillStyle = 'red';
-    // offcanvasContext.beginPath();
-    // offcanvasContext.fillRect(0,0,100,100);
-    // offcanvasContext.closePath();
+    // set the hidden canvas to be the same size as the area we cut out for bitmap detection
+    offcanvas.width = cut.width;
+    offcanvas.height = cut.height;
 
-
-    //Clear the canvas, top-left to bottom-right.
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+    // save our contexts before we apply custom transformation coordinates
     this.context.save();
+    offcanvasContext.save();
+
+    if(this.showBoundingBox) { // optionally show the bouding box we cut out for collision detection
+      this.context.fillStyle = '#649fd9';
+      this.context.fillRect(cut.x,cut.y,cut.width,cut.height);
+    }
+
+    // use our custom transformation and coordinates system (remember that getImageData ignores this)
     this.context.translate(this.canvas.width/2, this.canvas.height);
     this.context.scale(this.canvas.height, -this.canvas.height);
 
-    offcanvasContext.save();
-    offcanvasContext.translate(this.canvas.width/2, this.canvas.height);
-    offcanvasContext.scale(this.canvas.height, -this.canvas.height);
+    var birdData = (function(bird,canvas){ // accepts the bird entity and a canvas to draw onto for collision detection
+      if ((!'graphics' in bird.components) || (!'physics' in bird.components)) return false; // if the bird can't be rendered don't even try
 
+      // set our collision detection canvas to the same size as the source canvas
+      canvas.width = that.canvas.width;
+      canvas.height = that.canvas.height;
 
+      var context = canvas.getContext('2d'),
+      position = bird.components.physics.position;
+
+      context.save(); // save the context before applying custom transfomration coordinates
+
+      // apply custom transformation coordinates
+      context.translate(that.canvas.width/2, that.canvas.height);
+      context.scale(that.canvas.height, -that.canvas.height);
+
+      // draw the bird onto the hidden canvas
+      bird.components.graphics.draw(context);
+
+      // cut the image data (just the bouding box of the bird) out and colorize the pixels to solid green
+      var imgData = context.getImageData(cut.x, cut.y, cut.width, cut.height);
+      imgData = that.colorizeImageData(imgData,[0,255,0,255]);
+
+      return imgData; // return the green birdy
+
+    })(bird, document.createElement('canvas')); // pass in our bird entity and a temporary canvas to draw it onto
+
+    var pipeData = (function(entities,canvas){ // accepts the pipe entities
+      canvas.width = that.canvas.width;
+      canvas.height = that.canvas.height;
+
+      var context = canvas.getContext('2d');
+
+      // apply custom transformation coordinates
+      context.translate(that.canvas.width/2, that.canvas.height);
+      context.scale(that.canvas.height, -that.canvas.height);
+
+      for (var i=0; i<entities.length; i++) { // for each pipe
+        var entity = entities[i];
+        // draw the pipe the the hidden canvas
+        if ('graphics' in entity.components) entity.components.graphics.draw(context);
+
+      }
+
+      // cut the image data (just the bouding box of the bird) out and colorize the pixels to solid red
+      var imgData = context.getImageData(cut.x, cut.y, cut.width, cut.height);
+      imgData = that.colorizeImageData(imgData,[255,0,0,255]);
+
+      return imgData;
+
+    })(this.entities.slice(1),document.createElement('canvas')); // pass in the pipe entities and a temporary canvas to them onto
+
+    offcanvasContext.restore(); // back to the normal coordinates
+    offcanvasContext.clearRect(0,0,offcanvas.width,offcanvas.height); // clear the canvas
+
+    offcanvasContext.globalCompositeOperation = "multiply"; // set the blend mode to multiply so when pixels overlap they change color
+
+    // add our bird and pipe graphics as undestructive layers on top of each other
+    // REMEMBER: the bird is solid green and the pipe are solid red
+    offcanvasContext.drawImage(that.dataURLtoImg(that.imgDataToDataURL(pipeData)),0,0);
+    offcanvasContext.drawImage(that.dataURLtoImg(that.imgDataToDataURL(birdData)),0,0);
+
+    var isCollision = (function(){ // does the bird hit the pipes?
+      var imgData = offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height);
+      var data = imgData.data; // the pixel data of our hidden canvas
+      for(var i = 0; i <= data.length - 4; i+=4) { // loop through each pixel (4 at a time because it takes four indexes to repesent one pixel (r,g,b,a))
+        var isRed = (data[i] == 255 && !data[i+1] && !data[i+2]), // is the pixel solid red?
+        isGreen = (!data[i] && data[i+1] == 255 && !data[i+2]), // is the pixel solid green?
+        isNothing = (data[i] == 0 && data[i+1] == 0 && data[i+2] == 0 && data[i+3] == 0); // is the pixel nothing?
+
+         // if it ain't red, and it ain't green, and it ain't nothing we got ourselves a hit!
+         if(!isRed && !isGreen && !isNothing) return true;
+      }
+      return false; // go birdy, it's your birthday!
+    })();
+
+    if(isCollision) console.log('collision!');
 
     //Rendering of graphics goes here
     for (var i=0; i<this.entities.length; i++) {
         var entity = this.entities[i];
-        if (!'graphics' in entity.components) continue;
-
-        entity.components.graphics.draw(this.context);
-    }
-
-    // just the bird
-    for (var i=0; i<1; i++) {
-      var entity = this.entities[i];
-      if (!'graphics' in entity.components) continue;
-      if (!'physics' in entity.components) continue;
-
-      var position = entity.components.physics.position;
-
-
-
-
-
-      entity.components.graphics.draw(offcanvasContext);
-
-
-      var imgData = offcanvasContext.getImageData(
-        (offcanvas.width/2)-((offcanvas.height*0.1)/2),
-        (1-position.y)*offcanvas.height,
-        200,
-        200
-      );
-      imgData = this.colorizeImageData(imgData,[0,255,0,255]);
-
-      offcanvasContext.putImageData(imgData,0,0);
+        if ('graphics' in entity.components) entity.components.graphics.draw(this.context);
     }
 
     this.context.restore();
-    offcanvasContext.restore();
 
     //Continue the graphics rendering loop.
     window.requestAnimationFrame(this.tick.bind(this));
@@ -459,7 +374,6 @@ GraphicsSystem.prototype.imgDataToDataURL = function(imgData) {
   return c.toDataURL();
 }
 
-
 GraphicsSystem.prototype.dataURLtoImg = function(dataURL) {
     var img = new Image();
 
@@ -467,9 +381,17 @@ GraphicsSystem.prototype.dataURLtoImg = function(dataURL) {
     return img;
 }
 
+GraphicsSystem.prototype.clearContext = function(canvas,x,y,width,height) {
+  x = (typeof(x) == 'undefined') ? 0 : x;
+  y = (typeof(y) == 'undefined') ? 0 : y;
+  width = (typeof(width) == 'undefined') ? canvas.width : width;
+  height = (typeof(height) == 'undefined') ? canvas.height : height;
+  canvas.getContext('2d').clearRect(x,y,width,height);
+}
+
 exports.GraphicsSystem = GraphicsSystem;
 
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var InputSystem = function(entities) {
     this.entities = entities;
 
@@ -478,7 +400,7 @@ var InputSystem = function(entities) {
 };
 
 InputSystem.prototype.run = function() {
-    this.canvas.addEventListener('click', this.onClick.bind(this));
+    document.body.addEventListener('click', this.onClick.bind(this));
     document.body.addEventListener('keydown', this.onkeydown.bind(this));
 };
 
@@ -497,7 +419,7 @@ InputSystem.prototype.onkeydown = function(e) {
 
 exports.InputSystem = InputSystem;
 
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 
 var PhysicsSystem = function(entities) {
@@ -524,7 +446,7 @@ PhysicsSystem.prototype.tick = function() {
 
 exports.PhysicsSystem = PhysicsSystem;
 
-},{}],13:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var pipe = require('../entities/pipe');
 
 var PipeSystem = function(entities) {
@@ -562,4 +484,4 @@ PipeSystem.prototype.tick = function() {
 
 exports.PipeSystem = PipeSystem;
 
-},{"../entities/pipe":7}]},{},[9]);
+},{"../entities/pipe":5}]},{},[7]);
