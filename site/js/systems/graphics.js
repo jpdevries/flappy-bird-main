@@ -18,6 +18,8 @@ var GraphicsSystem = function(flappyBird) {
 
     this.paused = false;
 
+    this.lastStamp = null;
+
     this.numerals = document.getElementById("numerals");
 
     var canvas = this.canvas,
@@ -55,7 +57,8 @@ GraphicsSystem.prototype.pause = function() {
   this.paused = true;
 };
 
-GraphicsSystem.prototype.tick = function() {
+GraphicsSystem.prototype.tick = function(timestamp) {
+
     var that = this; // so we can reference "this" from nested namespaces
 
     var canvas = this.canvas,
@@ -190,12 +193,7 @@ GraphicsSystem.prototype.tick = function() {
         if ('graphics' in entity.components) entity.components.graphics.draw(this.context);
     }
 
-
-
-
     this.context.restore();
-
-
 
     if(this.showCollisionDetection) {
       this.context.putImageData( // if requested, show the hidden collisision detection in the top left
@@ -204,8 +202,6 @@ GraphicsSystem.prototype.tick = function() {
         0
       );
     }
-
-
 
     (function(that){
       var score = that.flappyBird.score,
@@ -247,12 +243,19 @@ GraphicsSystem.prototype.tick = function() {
       that.context.restore();
     })(this);
 
+    if(settings.displayFPS) {
+      (function(context,lastStamp){
+        var fps = 1000 / (timestamp-lastStamp);
+        context.font = "12px Verdana";
+        context.fillStyle = 'red';
+        context.fillText(fps.toString(),16,that.canvas.height - 16);
+      })(this.context,this.lastStamp);
+    }
 
-
+    this.lastStamp = timestamp;
 
     //Continue the graphics rendering loop.
     if(!this.paused) window.requestAnimationFrame(this.tick.bind(this));
-
 };
 
 GraphicsSystem.prototype.colorizeImageData = function(imgData,color) {
