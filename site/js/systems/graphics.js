@@ -1,5 +1,6 @@
 var EventEmitter = require('events');
 var util = require('util');
+var settings = require('../settings');
 
 var GraphicsSystem = function(entities) {
     var that = this;
@@ -160,13 +161,15 @@ GraphicsSystem.prototype.tick = function() {
     var isCollision = (function(){ // does the bird hit the pipes?
       var imgData = offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height),
       data = imgData.data; // the pixel data of our hidden canvas
+      var collisions = 0;
       for(var i = 0; i <= data.length - 4; i+=4) { // loop through each pixel (4 at a time because it takes four indexes to repesent one pixel (r,g,b,a))
         var isRed = (data[i] == 255 && !data[i+1] && !data[i+2]), // is the pixel solid red?
         isGreen = (!data[i] && data[i+1] == 255 && !data[i+2]), // is the pixel solid green?
         isNothing = (data[i] == 0 && data[i+1] == 0 && data[i+2] == 0 && data[i+3] == 0); // is the pixel nothing?
 
          // if it ain't red, and it ain't green, and it ain't nothing we got ourselves a hit!
-         if(!isRed && !isGreen && !isNothing) return true;
+         if(!isRed && !isGreen && !isNothing) collisions++;
+         if(collisions >= settings.collisionAllowance) return true;
       }
       return false; // go birdy, it's your birthday!
     })();
