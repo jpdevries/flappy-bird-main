@@ -4,6 +4,7 @@ var BirdGraphicsComponent = function(entity) {
     this.entity = entity;
 
     this.flapIndex = 0;
+    this.freakingOut = false;
 
     this.images = [
       document.getElementById("bird2"),
@@ -21,6 +22,17 @@ BirdGraphicsComponent.prototype.flap = function() {
   this.flapIndex += 1;
   if(this.flapIndex >= this.images.length) this.flapIndex = 0;
 };
+
+BirdGraphicsComponent.prototype.freakOut = function() {
+  if(this.freakingOut) return;
+  var that = this;
+  this.freakingOut = true;
+  console.log('freaking out');
+  setTimeout(function(){
+    console.log('stop freaking out');
+    that.freakingOut = false;
+  },240);
+}
 
 BirdGraphicsComponent.prototype.draw = function(context) {
     var position = this.entity.components.physics.position;
@@ -60,7 +72,12 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     //Restore transformation state back to what it was last time context.save was called.
     context.restore();
 
-    this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
+    if(!this.freakingOut) {
+        this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
+    } else {
+      this.radians += Math.degreesToRadians(-45);
+    }
+
 };
 
 exports.BirdGraphicsComponent = BirdGraphicsComponent;

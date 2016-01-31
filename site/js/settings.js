@@ -6,3 +6,4 @@ exports.lift = 0.5;
 exports.noseDive = 90;
 exports.minVerticalVelocity = -1;
 exports.maxVerticalVelocity = 0;
+exports.freakOutEvery = 2;

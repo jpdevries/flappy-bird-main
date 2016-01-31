@@ -2,10 +2,11 @@ var EventEmitter = require('events');
 var util = require('util');
 var settings = require('../settings');
 
-var GraphicsSystem = function(entities) {
+var GraphicsSystem = function(flappyBird) {
+    this.flappyBird = flappyBird;
     var that = this;
 
-    this.entities = entities;
+    this.entities = flappyBird.entities;
     //Canvas is WHERE we draw to. This part fetches the canvas element.
     this.canvas = document.getElementById('main-canvas');
     this.offcanvas = document.createElement('canvas');
@@ -16,6 +17,8 @@ var GraphicsSystem = function(entities) {
     this.showCollisionDetection = true;
 
     this.paused = false;
+
+    this.numerals = document.getElementById("numerals");
 
     var canvas = this.canvas,
     offcanvas = this.offcanvas;
@@ -187,7 +190,12 @@ GraphicsSystem.prototype.tick = function() {
         if ('graphics' in entity.components) entity.components.graphics.draw(this.context);
     }
 
+
+
+
     this.context.restore();
+
+
 
     if(this.showCollisionDetection) {
       this.context.putImageData( // if requested, show the hidden collisision detection in the top left
@@ -196,6 +204,51 @@ GraphicsSystem.prototype.tick = function() {
         0
       );
     }
+
+
+
+    (function(that){
+      var score = that.flappyBird.score,
+      digits = score.toString().split('');
+
+      if(score && score % settings.freakOutEvery == 0) bird.freakOutOver(score);
+
+      that.context.save();
+
+      that.context.translate(that.calculations.halfWidth - (30 * that.flappyBird.score.toString().length),0);
+
+      for(var i = 0; i < digits.length; i++) {
+        var digitData = (function(int){ // get the pixel data for the given digit
+          var canvas = document.createElement('canvas'),
+          context = canvas.getContext('2d'),
+          int = (typeof(int) == 'undefined') ? 0 : parseInt(int);
+
+          canvas.width = 60;
+          canvas.height = 80;
+
+          context.translate(-60*int,0);
+
+          context.drawImage(document.getElementById("numerals"),0,0,600,80);
+
+          var imgData = context.getImageData(0,0,canvas.width,canvas.height);
+
+          return imgData;
+        })(digits[i]);
+
+        that.context.drawImage(
+          that.dataURLtoImg(
+            that.imgDataToDataURL(digitData)
+          ),
+          i*30,
+          0
+        );
+
+      }
+      that.context.restore();
+    })(this);
+
+
+
 
     //Continue the graphics rendering loop.
     if(!this.paused) window.requestAnimationFrame(this.tick.bind(this));

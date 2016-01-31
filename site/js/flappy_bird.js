@@ -24,8 +24,13 @@ var FlappyBird = function() {
   this.gameOver = false;
   this.score = 0;
 
-  this.entities = [new bird.Bird()];
-  this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
+  var flappy = new bird.Bird();
+  setTimeout(function(){
+    flappy.freakOutOver(0);
+  },200);
+
+  this.entities = [flappy];
+  this.graphics = new graphicsSystem.GraphicsSystem(this);
   this.physics = new physicsSystem.PhysicsSystem(this.entities);
   this.input = new inputSystem.InputSystem(this.entities);
   this.pipes = new pipeSystem.PipeSystem(this.entities);
