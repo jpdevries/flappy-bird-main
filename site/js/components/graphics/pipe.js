@@ -1,3 +1,5 @@
+var settings = require("../../settings");
+
 var PipeGraphicsComponent = function(entity) {
     this.entity = entity;
     this.image = document.getElementById("pipe");
@@ -20,7 +22,7 @@ PipeGraphicsComponent.prototype.draw = function(context) {
 
     var image = this.image;
 
-    context.drawImage(image, 0, 0, 0.2, 1);
+    context.drawImage(image, 0, 0, settings.pipeWidth, 1);
 
     context.restore();
 

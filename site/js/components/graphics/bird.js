@@ -1,3 +1,5 @@
+var settings = require("../../settings");
+
 var BirdGraphicsComponent = function(entity) {
     this.entity = entity;
 };
@@ -28,7 +30,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     var image = document.getElementById("bird");
     context.scale(-1, 1);
     context.rotate(Math.PI);
-    context.drawImage(image, 0, 0, 0.1, 0.1);
+    context.drawImage(image, 0, 0, settings.birdRadius, settings.birdRadius);
 
     //Stop drawing.
     context.closePath();

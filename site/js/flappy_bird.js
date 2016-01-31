@@ -8,8 +8,7 @@ var inputSystem = require('./systems/input');
 var pipeSystem = require('./systems/pipe_system');
 
 var bird = require('./entities/bird');
-
-
+var settings = require('./settings');
 
 var FlappyBird = function() {
   var that = this;
@@ -36,7 +35,7 @@ var FlappyBird = function() {
   this.pipes.on('pipeadded',function(){ // whenever a pipe is added
     var entities = that.entities;
     entities = entities.filter(function(entity){ //
-      return (entity.components.physics.position.x > -2) ? true : false;
+      return (entity.components.physics.position.x > -(that.graphics.canvas.width / that.graphics.canvas.height)) ? true : false;
     });
 
     // update all the references to our entities
