@@ -25,11 +25,14 @@ var InputSystem = function(entities) {
 util.inherits(InputSystem, EventEmitter);
 
 InputSystem.prototype.run = function() {
-    document.body.addEventListener('click', this.onClick.bind(this));
+  this.canvas.addEventListener('click', this.onClick.bind(this), false);
+  document.body.addEventListener('click', this.onClick.bind(this), false);
     document.body.addEventListener('keydown', this.onkeydown.bind(this));
 };
 
-InputSystem.prototype.onClick = function() {
+InputSystem.prototype.onClick = function(e) {
+    e.preventDefault();
+    e.stopPropogation();
     var bird = this.entities[0];
     bird.components.physics.velocity.y = settings.lift;
 };
