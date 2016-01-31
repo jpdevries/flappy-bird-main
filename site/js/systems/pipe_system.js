@@ -25,7 +25,7 @@ PipeSystem.prototype.pause = function() {
 PipeSystem.prototype.tick = function() {
 
   var position = {
-    x:1.5,
+    x:(this.canvas.width / this.canvas.height),
     y:Math.randomRange(0.25,0.65)
   };
 
