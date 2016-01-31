@@ -7,15 +7,15 @@ var Pipe = function(position,flip) {
 	var physics = new physicsComponent.PhysicsComponent(this);
     physics.position.x = position.x;
 		physics.position.y = position.y;
-    physics.acceleration.x = -0.07;
 
+		physics.velocity.x = -0.5;
 
-	var graphics = new graphicsComponent.PipeGraphicsComponent(this);
+		var graphics = new graphicsComponent.PipeGraphicsComponent(this);
 
-	this.components = {
-		physics: physics,
-		graphics: graphics
-	};
+		this.components = {
+			physics: physics,
+			graphics: graphics
+		};
 };
 
 exports.Pipe = Pipe;

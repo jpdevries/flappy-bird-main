@@ -1,1 +1,520 @@
-!function t(i,e,n){function s(a,c){if(!e[a]){if(!i[a]){var h="function"==typeof require&&require;if(!c&&h)return h(a,!0);if(o)return o(a,!0);var r=new Error("Cannot find module '"+a+"'");throw r.code="MODULE_NOT_FOUND",r}var p=e[a]={exports:{}};i[a][0].call(p.exports,function(t){var e=i[a][1][t];return s(e?e:t)},p,p.exports,t,i,e,n)}return e[a].exports}for(var o="function"==typeof require&&require,a=0;a<n.length;a++)s(n[a]);return s}({1:[function(t,i,e){var n=function(t){this.entity=t};n.prototype.draw=function(t){var i=this.entity.components.physics.position;t.save(),t.translate(i.x,i.y),t.beginPath();var e=document.getElementById("bird");t.scale(-1,1),t.rotate(Math.PI),t.drawImage(e,0,0,.1,.1),t.closePath(),t.restore()},e.BirdGraphicsComponent=n},{}],2:[function(t,i,e){var n=function(t){this.entity=t};n.prototype.draw=function(t){var i=this.entity.components.physics.position,e=this.entity.flip;t.save(),t.translate(i.x,i.y),e&&t.scale(1,-1);var n=document.getElementById("pipe");t.drawImage(n,0,0,.2,1),t.restore()},e.PipeGraphicsComponent=n},{}],3:[function(t,i,e){var n=function(t){this.entity=t,this.position={x:0,y:0},this.velocity={x:0,y:0},this.acceleration={x:0,y:0}};n.prototype.update=function(t){this.velocity.x+=this.acceleration.x*t,this.velocity.y+=this.acceleration.y*t,this.position.x+=this.velocity.x*t,this.position.y+=this.velocity.y*t},e.PhysicsComponent=n},{}],4:[function(t,i,e){var n=t("../components/graphics/bird"),s=t("../components/physics/physics"),o=function(){var t=new s.PhysicsComponent(this);t.position.y=.5,t.acceleration.y=-.75;var i=new n.BirdGraphicsComponent(this);this.components={physics:t,graphics:i}};e.Bird=o},{"../components/graphics/bird":1,"../components/physics/physics":3}],5:[function(t,i,e){var n=t("../components/graphics/pipe"),s=t("../components/physics/physics"),o=function(t,i){this.flip="undefined"==typeof i?!1:i;var e=new s.PhysicsComponent(this);e.position.x=t.x,e.position.y=t.y,e.acceleration.x=-.07;var o=new n.PipeGraphicsComponent(this);this.components={physics:e,graphics:o}};e.Pipe=o},{"../components/graphics/pipe":2,"../components/physics/physics":3}],6:[function(t,i,e){Math.randomRange=function(t,i){return t+Math.random()*(i-t)};var n=t("./systems/graphics"),s=t("./systems/physics"),o=t("./systems/input"),a=t("./systems/pipe_system"),c=t("./entities/bird"),h=function(){this.entities=[new c.Bird],this.graphics=new n.GraphicsSystem(this.entities),this.physics=new s.PhysicsSystem(this.entities),this.input=new o.InputSystem(this.entities),this.pipes=new a.PipeSystem(this.entities)};h.prototype.run=function(){this.graphics.run(),this.physics.run(),this.input.run(),this.pipes.run()},e.FlappyBird=h},{"./entities/bird":4,"./systems/graphics":8,"./systems/input":9,"./systems/physics":10,"./systems/pipe_system":11}],7:[function(t,i,e){var n=t("./flappy_bird");document.addEventListener("DOMContentLoaded",function(){var t=new n.FlappyBird;t.run()})},{"./flappy_bird":6}],8:[function(t,i,e){var n=function(t){function i(){n.width=window.innerWidth,n.height=window.innerHeight,e.calculations.birdSize=.1*n.height,e.calculations.halfWidth=n.width/2}var e=this;this.entities=t,this.canvas=document.getElementById("main-canvas"),this.offcanvas=document.createElement("canvas"),this.context=this.canvas.getContext("2d"),this.showBoundingBox=!1,this.showCollisionDetection=!0;var n=this.canvas;this.offcanvas;document.body.addEventListener("keydown",function(t){e.showCollisionDetection=!e.showCollisionDetection}),console.log("Pro tip: press spacebar to toggle the visibility of the hidden collision detection canvas"),e.calculations={},i(),window.onresize=function(){i()}};n.prototype.run=function(){window.requestAnimationFrame(this.tick.bind(this))},n.prototype.tick=function(){var t=this,i=this.canvas,e=this.offcanvas,n=e.getContext("2d");this.clearContext(i),this.clearContext(e);var s=this.entities[0],o={x:t.calculations.halfWidth,y:(1-s.components.physics.position.y)*i.height,width:t.calculations.birdSize,height:t.calculations.birdSize};e.width=o.width,e.height=o.height,this.context.save(),n.save(),this.showBoundingBox&&(this.context.fillStyle="#649fd9",this.context.fillRect(o.x,o.y,o.width,o.height)),this.context.translate(t.calculations.halfWidth,this.canvas.height),this.context.scale(this.canvas.height,-this.canvas.height);var a=function(i,e){if(!1 in i.components||!1 in i.components)return!1;e.width=t.canvas.width,e.height=t.canvas.height;var n=e.getContext("2d");i.components.physics.position;n.save(),n.translate(t.calculations.halfWidth,t.canvas.height),n.scale(t.canvas.height,-t.canvas.height),i.components.graphics.draw(n);var s=n.getImageData(o.x,o.y,o.width,o.height);return s=t.colorizeImageData(s,[0,255,0,255]),n.restore(),t.clearContext(e),s}(s,document.createElement("canvas")),c=function(i,e){e.width=t.canvas.width,e.height=t.canvas.height;var n=e.getContext("2d");n.save(),n.translate(t.calculations.halfWidth,t.canvas.height),n.scale(t.canvas.height,-t.canvas.height);for(var s=0;s<i.length;s++){var a=i[s];"graphics"in a.components&&a.components.graphics.draw(n)}var c=n.getImageData(o.x,o.y,o.width,o.height);return c=t.colorizeImageData(c,[255,0,0,255]),n.restore(),t.clearContext(e),c}(this.entities.slice(1),document.createElement("canvas"));n.restore(),n.clearRect(0,0,e.width,e.height),n.globalCompositeOperation="multiply",n.drawImage(t.dataURLtoImg(t.imgDataToDataURL(c)),0,0),n.drawImage(t.dataURLtoImg(t.imgDataToDataURL(a)),0,0);var h=function(){for(var t=n.getImageData(0,0,e.width,e.height),i=t.data,s=0;s<=i.length-4;s+=4){var o=255==i[s]&&!i[s+1]&&!i[s+2],a=!i[s]&&255==i[s+1]&&!i[s+2],c=0==i[s]&&0==i[s+1]&&0==i[s+2]&&0==i[s+3];if(!o&&!a&&!c)return!0}return!1}();h&&console.log("collision!");for(var r=0;r<this.entities.length;r++){var p=this.entities[r];"graphics"in p.components&&p.components.graphics.draw(this.context)}this.context.restore(),this.showCollisionDetection&&this.context.putImageData(n.getImageData(0,0,e.width,e.height),0,0),window.requestAnimationFrame(this.tick.bind(this))},n.prototype.colorizeImageData=function(t,i){for(var e=t.data,n=0;n<=e.length-4;n+=4)(e[n]||e[n+1]||e[n+2]||e[n+3])&&(e[n]=i[0],e[n+1]=i[1],e[n+2]=i[2],e[n+3]=i[3]);return t},n.prototype.imgDataToDataURL=function(t){var i=document.createElement("canvas");return i.width=t.width,i.height=t.height,i.getContext("2d").putImageData(t,0,0),i.toDataURL()},n.prototype.dataURLtoImg=function(t){var i=new Image;return i.src=t,i},n.prototype.clearContext=function(t,i,e,n,s){i="undefined"==typeof i?0:i,e="undefined"==typeof e?0:e,n="undefined"==typeof n?t.width:n,s="undefined"==typeof s?t.height:s,t.getContext("2d").clearRect(i,e,n,s)},e.GraphicsSystem=n},{}],9:[function(t,i,e){var n=function(t){this.entities=t,this.canvas=document.getElementById("main-canvas")};n.prototype.run=function(){document.body.addEventListener("click",this.onClick.bind(this)),document.body.addEventListener("keydown",this.onkeydown.bind(this))},n.prototype.onClick=function(){var t=this.entities[0];t.components.physics.velocity.y=.4},n.prototype.onkeydown=function(t){if(32==t.keyCode){var i=this.entities[0];i.components.physics.velocity.y=.4}},e.InputSystem=n},{}],10:[function(t,i,e){var n=function(t){this.entities=t};n.prototype.run=function(){window.setInterval(this.tick.bind(this),1e3/60)},n.prototype.tick=function(){for(var t=0;t<this.entities.length;t++){var i=this.entities[t];!1 in i.components||i.components.physics.update(1/60)}},e.PhysicsSystem=n},{}],11:[function(t,i,e){var n=t("../entities/pipe"),s=function(t){this.entities=t,this.canvas=document.getElementById("main-canvas"),this.interval=null};s.prototype.run=function(){this.tick(),this.interval=window.setInterval(this.tick.bind(this),2e3)},s.prototype.pause=function(){null!=this.interval&&(window.clearInterval(this.interval),this.interval=null)},s.prototype.tick=function(){var t={x:1.5,y:Math.randomRange(.25,.65)};this.entities.push(new n.Pipe(t,!0)),t.y+=.25,this.entities.push(new n.Pipe(t,!1))},e.PipeSystem=s},{"../entities/pipe":5}]},{},[7]);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var BirdGraphicsComponent = function(entity) {
+    this.entity = entity;
+};
+
+BirdGraphicsComponent.prototype.draw = function(context) {
+    //console.log("Drawing a bird");
+
+    var position = this.entity.components.physics.position;
+
+    //Save a snapshot of the current transformation state.
+    context.save();
+
+    //Move the canvas to the x & y cordinates defined in position variable.
+    context.translate(position.x, position.y);
+
+    //Start drawing a new path by calling the beginPath function.
+    context.beginPath();
+
+    //Use the context.arc function to draw an arc centered 0px from the left of the canvas
+    //and 0px from the top of the canvas, w/ radius of 0.02, and covering an angle between 0
+    //and 2 x pi (is a whole circle).
+    //context.arc(0, 0, 0.02, 0, 2 * Math.PI);
+
+    //Use the context.fill function to fill in the arc with whatever the current
+    //context.fillStyle is (this defaults to black unless changed).
+    //context.fill();
+
+    var image = document.getElementById("bird");
+    context.scale(-1, 1);
+    context.rotate(Math.PI);
+    context.drawImage(image, 0, 0, 0.1, 0.1);
+
+    //Stop drawing.
+    context.closePath();
+
+    //Restore transformation state back to what it was last time context.save was called.
+    context.restore();
+};
+
+exports.BirdGraphicsComponent = BirdGraphicsComponent;
+
+},{}],2:[function(require,module,exports){
+var PipeGraphicsComponent = function(entity) {
+    this.entity = entity;
+};
+
+PipeGraphicsComponent.prototype.draw = function(context) {
+    var position = this.entity.components.physics.position;
+    var flip = this.entity.flip;
+
+    //Save a snapshot of the current transformation state.
+    context.save();
+
+    //Move the canvas to the x & y cordinates defined in position variable.
+    context.translate(position.x, position.y);
+
+
+    if(flip) {
+      context.scale(1,-1);
+    }
+
+    var image = document.getElementById("pipe");
+
+    context.drawImage(image, 0, 0, 0.2, 1);
+
+    context.restore();
+
+    //Move the canvas to the x & y cordinates defined in position variable.
+    //context.translate(position.x, position.y);
+
+    //Start drawing a new path by calling the beginPath function.
+    //context.beginPath();
+
+    //use fillStyle to tell the computer what color the pipe should be
+    //context.fillStyle = "green";
+
+    //Use fillRect function to tell computer where to draw the pipe & what size
+    //first number is how far from left, second is how far from top right,
+    //third and fourth are width and height of pipe
+    //context.fillRect(1, .5, .2, 1.5);
+};
+
+exports.PipeGraphicsComponent = PipeGraphicsComponent;
+
+},{}],3:[function(require,module,exports){
+var PhysicsComponent = function(entity) {
+    this.entity = entity;
+
+    this.position = {
+        x: 0,
+        y: 0
+    };
+    this.velocity = {
+        x: 0,
+        y: 0
+    };
+    this.acceleration = {
+        x: 0,
+        y: 0
+    };
+};
+
+PhysicsComponent.prototype.update = function(delta,accelerate) {
+    if(accelerate) {
+      this.velocity.x += this.acceleration.x * delta;
+      this.velocity.y += this.acceleration.y * delta;
+    }
+
+    this.position.x += this.velocity.x * delta;
+    this.position.y += this.velocity.y * delta;
+};
+
+exports.PhysicsComponent = PhysicsComponent;
+
+},{}],4:[function(require,module,exports){
+var graphicsComponent = require("../components/graphics/bird");
+var physicsComponent = require("../components/physics/physics");
+
+var Bird = function() {
+    var physics = new physicsComponent.PhysicsComponent(this);
+    physics.position.y = 0.5;
+    physics.acceleration.y = -0.75;
+
+    var graphics = new graphicsComponent.BirdGraphicsComponent(this);
+
+    this.components = {
+    	physics: physics,
+    	graphics: graphics
+
+    };
+};
+
+exports.Bird = Bird;
+
+},{"../components/graphics/bird":1,"../components/physics/physics":3}],5:[function(require,module,exports){
+var graphicsComponent = require("../components/graphics/pipe");
+var physicsComponent = require("../components/physics/physics");
+
+var Pipe = function(position,flip) {
+	this.flip = (typeof(flip) == 'undefined') ? false : flip;
+
+	var physics = new physicsComponent.PhysicsComponent(this);
+    physics.position.x = position.x;
+		physics.position.y = position.y;
+
+		physics.velocity.x = -0.5;
+
+		var graphics = new graphicsComponent.PipeGraphicsComponent(this);
+
+		this.components = {
+			physics: physics,
+			graphics: graphics
+		};
+};
+
+exports.Pipe = Pipe;
+
+},{"../components/graphics/pipe":2,"../components/physics/physics":3}],6:[function(require,module,exports){
+Math.randomRange = function(min,max) {
+  	  return min + (Math.random() * (max-min));
+};
+
+var graphicsSystem = require('./systems/graphics');
+var physicsSystem = require('./systems/physics');
+var inputSystem = require('./systems/input');
+var pipeSystem = require('./systems/pipe_system');
+
+var bird = require('./entities/bird');
+
+
+
+var FlappyBird = function() {
+
+    this.entities = [new bird.Bird()];
+    this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
+    this.physics = new physicsSystem.PhysicsSystem(this.entities);
+    this.input = new inputSystem.InputSystem(this.entities);
+    this.pipes = new pipeSystem.PipeSystem(this.entities);
+
+
+};
+
+FlappyBird.prototype.run = function() {
+    this.graphics.run();
+    this.physics.run();
+    this.input.run();
+    this.pipes.run();
+};
+
+exports.FlappyBird = FlappyBird;
+
+},{"./entities/bird":4,"./systems/graphics":8,"./systems/input":9,"./systems/physics":10,"./systems/pipe_system":11}],7:[function(require,module,exports){
+var flappyBird = require('./flappy_bird');
+
+document.addEventListener('DOMContentLoaded', function() {
+    var app = new flappyBird.FlappyBird();
+    app.run();
+});
+},{"./flappy_bird":6}],8:[function(require,module,exports){
+var GraphicsSystem = function(entities) {
+    var that = this;
+
+    this.entities = entities;
+    //Canvas is WHERE we draw to. This part fetches the canvas element.
+    this.canvas = document.getElementById('main-canvas');
+    this.offcanvas = document.createElement('canvas');
+    //Context is WHAT we draw to
+    this.context = this.canvas.getContext('2d');
+
+    this.showBoundingBox = false;
+    this.showCollisionDetection = true;
+
+    var canvas = this.canvas,
+    offcanvas = this.offcanvas;
+
+    document.body.addEventListener('keydown',function(e){ // when the space bar is pressed
+      that.showCollisionDetection = !that.showCollisionDetection;
+    });
+
+    console.log('Pro tip: press spacebar to toggle the visibility of the hidden collision detection canvas');
+
+    that.calculations = {};
+    handleResize();
+    window.onresize = function() {
+        handleResize();
+    }
+    function handleResize() { // calculate and store these values on window resize rather than each step of the animation
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        that.calculations.birdSize = canvas.height * .1;
+        that.calculations.halfWidth = canvas.width / 2;
+    }
+};
+
+GraphicsSystem.prototype.run = function() {
+    //Run the graphics rendering loop. requestAnimationFrame runs ever 1/60th of a second.
+    window.requestAnimationFrame(this.tick.bind(this));
+};
+
+GraphicsSystem.prototype.tick = function() {
+    var that = this; // so we can reference "this" from nested namespaces
+
+    var canvas = this.canvas,
+    offcanvas = this.offcanvas,
+    offcanvasContext = offcanvas.getContext('2d');
+
+    // start fresh for our visual canvas and our hidden hit detection offcanvas
+    this.clearContext(canvas);
+    this.clearContext(offcanvas);
+
+    var bird = this.entities[0],
+    cut = { // the section of the stage we are cutting out. we only take the bounding box of the bird for both our subjects (the bird and the pipes)
+      x:that.calculations.halfWidth,
+      y:(1-bird.components.physics.position.y)*canvas.height,
+      width:that.calculations.birdSize,
+      height:that.calculations.birdSize
+    };
+
+    // set the hidden canvas to be the same size as the area we cut out for bitmap detection
+    offcanvas.width = cut.width;
+    offcanvas.height = cut.height;
+
+    // save our contexts before we apply custom transformation coordinates
+    this.context.save();
+    offcanvasContext.save();
+
+    if(this.showBoundingBox) { // optionally show the bouding box we cut out for collision detection
+      this.context.fillStyle = '#649fd9';
+      this.context.fillRect(cut.x,cut.y,cut.width,cut.height);
+    }
+
+    // use our custom transformation and coordinates system (remember that getImageData ignores this)
+    this.context.translate(that.calculations.halfWidth, this.canvas.height);
+    this.context.scale(this.canvas.height, -this.canvas.height);
+
+    var birdData = (function(bird,canvas){ // accepts the bird entity and a canvas to draw onto for collision detection
+      if ((!'graphics' in bird.components) || (!'physics' in bird.components)) return false; // if the bird can't be rendered don't even try
+
+      // set our collision detection canvas to the same size as the source canvas
+      canvas.width = that.canvas.width;
+      canvas.height = that.canvas.height;
+
+      var context = canvas.getContext('2d'),
+      position = bird.components.physics.position;
+
+      context.save(); // save the context before applying custom transfomration coordinates
+
+      // apply custom transformation coordinates
+      context.translate(that.calculations.halfWidth, that.canvas.height);
+      context.scale(that.canvas.height, -that.canvas.height);
+
+      // draw the bird onto the hidden canvas
+      bird.components.graphics.draw(context);
+
+      // cut the image data (just the bouding box of the bird) out and colorize the pixels to solid green
+      var imgData = context.getImageData(cut.x, cut.y, cut.width, cut.height);
+      imgData = that.colorizeImageData(imgData,[0,255,0,255]);
+
+      context.restore();
+      that.clearContext(canvas);
+
+      return imgData; // return the green birdy
+
+    })(bird, document.createElement('canvas')); // pass in our bird entity and a temporary canvas to draw it onto
+
+    var pipeData = (function(entities,canvas){ // accepts the pipe entities
+      canvas.width = that.canvas.width;
+      canvas.height = that.canvas.height;
+
+      var context = canvas.getContext('2d');
+
+      context.save(); // save the context before applying custom transfomration coordinates
+
+      // apply custom transformation coordinates
+      context.translate(that.calculations.halfWidth, that.canvas.height);
+      context.scale(that.canvas.height, -that.canvas.height);
+
+      for (var i=0; i<entities.length; i++) { // for each pipe
+        var entity = entities[i];
+        // draw the pipe the the hidden canvas
+        if ('graphics' in entity.components) entity.components.graphics.draw(context);
+      }
+
+      // cut the image data (just the bouding box of the bird) out and colorize the pixels to solid red
+      var imgData = context.getImageData(cut.x, cut.y, cut.width, cut.height);
+      imgData = that.colorizeImageData(imgData,[255,0,0,255]);
+
+      context.restore();
+      that.clearContext(canvas);
+
+      return imgData;
+
+    })(this.entities.slice(1),document.createElement('canvas')); // pass in the pipe entities and a temporary canvas to them onto
+
+    offcanvasContext.restore(); // back to the normal coordinates
+    offcanvasContext.clearRect(0,0,offcanvas.width,offcanvas.height); // clear the canvas
+
+    offcanvasContext.globalCompositeOperation = "multiply"; // set the blend mode to multiply so when pixels overlap they change color
+
+    // add our bird and pipe graphics as undestructive layers on top of each other
+    // REMEMBER: the bird is solid green and the pipe are solid red
+    // we can't just use putImageData() because it is destructive (in other words) removes pixels beneath
+    // so we take the imageData and convert it to a dataURL, then convert that to an Image, then pass that to drawImage
+    offcanvasContext.drawImage(that.dataURLtoImg(that.imgDataToDataURL(pipeData)),0,0);
+    offcanvasContext.drawImage(that.dataURLtoImg(that.imgDataToDataURL(birdData)),0,0);
+
+    var isCollision = (function(){ // does the bird hit the pipes?
+      var imgData = offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height),
+      data = imgData.data; // the pixel data of our hidden canvas
+      for(var i = 0; i <= data.length - 4; i+=4) { // loop through each pixel (4 at a time because it takes four indexes to repesent one pixel (r,g,b,a))
+        var isRed = (data[i] == 255 && !data[i+1] && !data[i+2]), // is the pixel solid red?
+        isGreen = (!data[i] && data[i+1] == 255 && !data[i+2]), // is the pixel solid green?
+        isNothing = (data[i] == 0 && data[i+1] == 0 && data[i+2] == 0 && data[i+3] == 0); // is the pixel nothing?
+
+         // if it ain't red, and it ain't green, and it ain't nothing we got ourselves a hit!
+         if(!isRed && !isGreen && !isNothing) return true;
+      }
+      return false; // go birdy, it's your birthday!
+    })();
+
+    if(isCollision) console.log('collision!');
+
+    //Rendering of graphics goes here
+    for (var i=0; i<this.entities.length; i++) {
+        var entity = this.entities[i];
+        if ('graphics' in entity.components) entity.components.graphics.draw(this.context);
+    }
+
+    this.context.restore();
+
+    if(this.showCollisionDetection) {
+      this.context.putImageData( // if requested, show the hidden collisision detection in the top left
+        offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height),
+        0,
+        0
+      );
+    }
+
+    //Continue the graphics rendering loop.
+    window.requestAnimationFrame(this.tick.bind(this));
+
+};
+
+GraphicsSystem.prototype.colorizeImageData = function(imgData,color) {
+  var data = imgData.data;
+  for(var i = 0; i <= data.length-4; i+=4) {
+    if(!(!data[i] && !data[i+1] && !data[i+2] && !data[i+3])) {
+
+      data[i] = color[0];
+      data[i+1] = color[1];
+      data[i+2] = color[2];
+      data[i+3] = color[3];
+    }
+  }
+  return imgData;
+}
+
+GraphicsSystem.prototype.imgDataToDataURL = function(imgData) {
+  var c = document.createElement('canvas');
+
+  c.width = imgData.width;
+  c.height = imgData.height;
+
+  c.getContext('2d').putImageData(imgData,0,0);
+  return c.toDataURL();
+}
+
+GraphicsSystem.prototype.dataURLtoImg = function(dataURL) {
+    var img = new Image();
+
+    img.src = dataURL;
+    return img;
+}
+
+GraphicsSystem.prototype.clearContext = function(canvas,x,y,width,height) {
+  x = (typeof(x) == 'undefined') ? 0 : x;
+  y = (typeof(y) == 'undefined') ? 0 : y;
+  width = (typeof(width) == 'undefined') ? canvas.width : width;
+  height = (typeof(height) == 'undefined') ? canvas.height : height;
+  canvas.getContext('2d').clearRect(x,y,width,height);
+}
+
+exports.GraphicsSystem = GraphicsSystem;
+
+},{}],9:[function(require,module,exports){
+var InputSystem = function(entities) {
+    this.entities = entities;
+
+    // Canvas is where we get input from
+    this.canvas = document.getElementById('main-canvas');
+};
+
+InputSystem.prototype.run = function() {
+    document.body.addEventListener('click', this.onClick.bind(this));
+    document.body.addEventListener('keydown', this.onkeydown.bind(this));
+};
+
+InputSystem.prototype.onClick = function() {
+    var bird = this.entities[0];
+    bird.components.physics.velocity.y = 0.4;
+};
+
+InputSystem.prototype.onkeydown = function(e) {
+
+	if (e.keyCode ==32) {
+		var bird = this.entities[0];
+		bird.components.physics.velocity.y = 0.4;
+	}
+};
+
+exports.InputSystem = InputSystem;
+
+},{}],10:[function(require,module,exports){
+
+
+var PhysicsSystem = function(entities) {
+    this.entities = entities;
+    //this.collisionSystem = new collisionSystem.CollisionSystem(entities);
+};
+
+PhysicsSystem.prototype.run = function() {
+    // Run the update loop
+    window.setInterval(this.tick.bind(this), 1000 /60);
+};
+
+PhysicsSystem.prototype.tick = function() {
+    for (var i=0; i<this.entities.length; i++) {
+        var entity = this.entities[i];
+        if (!'physics' in entity.components) {
+            continue;
+        }
+
+        entity.components.physics.update(1/60,i<1); // pass in the framerate and whether or not to accelerate (only acceralte the bird in other words don't accelerate the pipes)
+    }
+    //this.collisionSystem.tick();
+};
+
+exports.PhysicsSystem = PhysicsSystem;
+
+},{}],11:[function(require,module,exports){
+var pipe = require('../entities/pipe');
+
+var PipeSystem = function(entities) {
+  this.entities = entities;
+  this.canvas = document.getElementById('main-canvas');
+  this.interval = null;
+}
+
+PipeSystem.prototype.run = function() {
+  this.tick();
+  this.interval = window.setInterval(this.tick.bind(this),2000);
+};
+
+PipeSystem.prototype.pause = function() {
+  if(this.interval != null) {
+    window.clearInterval(this.interval);
+    this.interval = null;
+  }
+}
+
+PipeSystem.prototype.tick = function() {
+
+  var position = {
+    x:1.5,
+    y:Math.randomRange(0.25,0.65)
+  };
+
+  this.entities.push(new pipe.Pipe(position, true));
+            
+  position.y += .25;                                                              
+
+  this.entities.push(new pipe.Pipe(position, false));
+  
+};
+
+exports.PipeSystem = PipeSystem;
+
+},{"../entities/pipe":5}]},{},[7]);

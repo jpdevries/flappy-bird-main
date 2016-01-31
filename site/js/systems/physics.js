@@ -17,7 +17,7 @@ PhysicsSystem.prototype.tick = function() {
             continue;
         }
 
-        entity.components.physics.update(1/60);
+        entity.components.physics.update(1/60,i<1); // pass in the framerate and whether or not to accelerate (only acceralte the bird in other words don't accelerate the pipes)
     }
     //this.collisionSystem.tick();
 };
