@@ -1,5 +1,6 @@
 var PipeGraphicsComponent = function(entity) {
     this.entity = entity;
+    this.image = document.getElementById("pipe");
 };
 
 PipeGraphicsComponent.prototype.draw = function(context) {
@@ -17,7 +18,7 @@ PipeGraphicsComponent.prototype.draw = function(context) {
       context.scale(1,-1);
     }
 
-    var image = document.getElementById("pipe");
+    var image = this.image;
 
     context.drawImage(image, 0, 0, 0.2, 1);
 

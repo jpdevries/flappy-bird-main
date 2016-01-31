@@ -1,3 +1,6 @@
+var EventEmitter = require('events');
+var util = require('util');
+
 var GraphicsSystem = function(entities) {
     var that = this;
 
@@ -10,6 +13,8 @@ var GraphicsSystem = function(entities) {
 
     this.showBoundingBox = false;
     this.showCollisionDetection = true;
+
+    this.paused = false;
 
     var canvas = this.canvas,
     offcanvas = this.offcanvas;
@@ -34,9 +39,15 @@ var GraphicsSystem = function(entities) {
     }
 };
 
+util.inherits(GraphicsSystem, EventEmitter);
+
 GraphicsSystem.prototype.run = function() {
     //Run the graphics rendering loop. requestAnimationFrame runs ever 1/60th of a second.
     window.requestAnimationFrame(this.tick.bind(this));
+};
+
+GraphicsSystem.prototype.pause = function() {
+  this.paused = true;
 };
 
 GraphicsSystem.prototype.tick = function() {
@@ -160,7 +171,11 @@ GraphicsSystem.prototype.tick = function() {
       return false; // go birdy, it's your birthday!
     })();
 
-    if(isCollision) console.log('collision!');
+    if(isCollision) {
+      console.log('collision!');
+
+      that.emit('collision');
+    }
 
     //Rendering of graphics goes here
     for (var i=0; i<this.entities.length; i++) {
@@ -179,7 +194,7 @@ GraphicsSystem.prototype.tick = function() {
     }
 
     //Continue the graphics rendering loop.
-    window.requestAnimationFrame(this.tick.bind(this));
+    if(!this.paused) window.requestAnimationFrame(this.tick.bind(this));
 
 };
 

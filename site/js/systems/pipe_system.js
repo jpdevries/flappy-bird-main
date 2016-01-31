@@ -1,10 +1,14 @@
 var pipe = require('../entities/pipe');
+var EventEmitter = require('events');
+var util = require('util');
 
 var PipeSystem = function(entities) {
   this.entities = entities;
   this.canvas = document.getElementById('main-canvas');
   this.interval = null;
 }
+
+util.inherits(PipeSystem, EventEmitter);
 
 PipeSystem.prototype.run = function() {
   this.tick();
@@ -26,11 +30,12 @@ PipeSystem.prototype.tick = function() {
   };
 
   this.entities.push(new pipe.Pipe(position, true));
-            
-  position.y += .25;                                                              
+
+  position.y += .25;
 
   this.entities.push(new pipe.Pipe(position, false));
-  
+
+  this.emit('pipeadded');
 };
 
 exports.PipeSystem = PipeSystem;
