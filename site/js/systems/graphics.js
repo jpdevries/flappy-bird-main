@@ -37,6 +37,7 @@ var GraphicsSystem = function(entities) {
 
         that.calculations.birdSize = canvas.height * .1;
         that.calculations.halfWidth = canvas.width / 2;
+        that.calculations.birdSizeBuffer = that.calculations.birdSize * 1.2; // pad the cut area because we angle the graphic with the "nose dive" effect
     }
 };
 
@@ -66,8 +67,8 @@ GraphicsSystem.prototype.tick = function() {
     cut = { // the section of the stage we are cutting out. we only take the bounding box of the bird for both our subjects (the bird and the pipes)
       x:that.calculations.halfWidth,
       y:(1-bird.components.physics.position.y)*canvas.height,
-      width:that.calculations.birdSize,
-      height:that.calculations.birdSize
+      width:that.calculations.birdSizeBuffer,
+      height:that.calculations.birdSizeBuffer
     };
 
     // set the hidden canvas to be the same size as the area we cut out for bitmap detection

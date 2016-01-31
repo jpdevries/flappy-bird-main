@@ -28,11 +28,8 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     //Save a snapshot of the current transformation state.
     context.save();
 
-
-
     //Move the canvas to the x & y cordinates defined in position variable.
     context.translate(position.x, position.y);
-
 
     context.scale(-1, 1);
     context.rotate(Math.PI);
@@ -43,6 +40,13 @@ BirdGraphicsComponent.prototype.draw = function(context) {
 
     //context.fillRect(-settings.birdRadius/2,-settings.birdRadius/2,settings.birdRadius,settings.birdRadius);
 
+    var verticalVelocity = this.entity.components.physics.velocity.y;
+    verticalVelocity = Math.max(settings.minVerticalVelocity,verticalVelocity);
+    verticalVelocity = Math.min(settings.maxVerticalVelocity,verticalVelocity);
+
+    verticalVelocity = -verticalVelocity;
+
+    var noseDive = settings.noseDive;
 
     //Start drawing a new path by calling the beginPath function.
     context.beginPath();
@@ -56,7 +60,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     //Restore transformation state back to what it was last time context.save was called.
     context.restore();
 
-    this.radians += Math.degreesToRadians(1/6);
+    this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
 };
 
 exports.BirdGraphicsComponent = BirdGraphicsComponent;
