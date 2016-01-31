@@ -18,13 +18,19 @@ var GraphicsSystem = function(entities) {
       that.showCollisionDetection = !that.showCollisionDetection;
     });
 
+    console.log('Pro tip: press spacebar to toggle the visibility of the hidden collision detection canvas');
+
+    that.calculations = {};
     handleResize();
     window.onresize = function() {
         handleResize();
     }
-    function handleResize() {
+    function handleResize() { // calculate and store these values on window resize rather than each step of the animation
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+
+        that.calculations.birdSize = canvas.height * .1;
+        that.calculations.halfWidth = canvas.width / 2;
     }
 };
 
@@ -46,10 +52,10 @@ GraphicsSystem.prototype.tick = function() {
 
     var bird = this.entities[0],
     cut = { // the section of the stage we are cutting out. we only take the bounding box of the bird for both our subjects (the bird and the pipes)
-      x:(canvas.width/2),
+      x:that.calculations.halfWidth,
       y:(1-bird.components.physics.position.y)*canvas.height,
-      width:120,
-      height:120
+      width:that.calculations.birdSize,
+      height:that.calculations.birdSize
     };
 
     // set the hidden canvas to be the same size as the area we cut out for bitmap detection
@@ -66,7 +72,7 @@ GraphicsSystem.prototype.tick = function() {
     }
 
     // use our custom transformation and coordinates system (remember that getImageData ignores this)
-    this.context.translate(this.canvas.width/2, this.canvas.height);
+    this.context.translate(that.calculations.halfWidth, this.canvas.height);
     this.context.scale(this.canvas.height, -this.canvas.height);
 
     var birdData = (function(bird,canvas){ // accepts the bird entity and a canvas to draw onto for collision detection
@@ -82,7 +88,7 @@ GraphicsSystem.prototype.tick = function() {
       context.save(); // save the context before applying custom transfomration coordinates
 
       // apply custom transformation coordinates
-      context.translate(that.canvas.width/2, that.canvas.height);
+      context.translate(that.calculations.halfWidth, that.canvas.height);
       context.scale(that.canvas.height, -that.canvas.height);
 
       // draw the bird onto the hidden canvas
@@ -91,6 +97,9 @@ GraphicsSystem.prototype.tick = function() {
       // cut the image data (just the bouding box of the bird) out and colorize the pixels to solid green
       var imgData = context.getImageData(cut.x, cut.y, cut.width, cut.height);
       imgData = that.colorizeImageData(imgData,[0,255,0,255]);
+
+      context.restore();
+      that.clearContext(canvas);
 
       return imgData; // return the green birdy
 
@@ -102,20 +111,24 @@ GraphicsSystem.prototype.tick = function() {
 
       var context = canvas.getContext('2d');
 
+      context.save(); // save the context before applying custom transfomration coordinates
+
       // apply custom transformation coordinates
-      context.translate(that.canvas.width/2, that.canvas.height);
+      context.translate(that.calculations.halfWidth, that.canvas.height);
       context.scale(that.canvas.height, -that.canvas.height);
 
       for (var i=0; i<entities.length; i++) { // for each pipe
         var entity = entities[i];
         // draw the pipe the the hidden canvas
         if ('graphics' in entity.components) entity.components.graphics.draw(context);
-
       }
 
       // cut the image data (just the bouding box of the bird) out and colorize the pixels to solid red
       var imgData = context.getImageData(cut.x, cut.y, cut.width, cut.height);
       imgData = that.colorizeImageData(imgData,[255,0,0,255]);
+
+      context.restore();
+      that.clearContext(canvas);
 
       return imgData;
 
@@ -128,12 +141,14 @@ GraphicsSystem.prototype.tick = function() {
 
     // add our bird and pipe graphics as undestructive layers on top of each other
     // REMEMBER: the bird is solid green and the pipe are solid red
+    // we can't just use putImageData() because it is destructive (in other words) removes pixels beneath
+    // so we take the imageData and convert it to a dataURL, then convert that to an Image, then pass that to drawImage
     offcanvasContext.drawImage(that.dataURLtoImg(that.imgDataToDataURL(pipeData)),0,0);
     offcanvasContext.drawImage(that.dataURLtoImg(that.imgDataToDataURL(birdData)),0,0);
 
     var isCollision = (function(){ // does the bird hit the pipes?
-      var imgData = offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height);
-      var data = imgData.data; // the pixel data of our hidden canvas
+      var imgData = offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height),
+      data = imgData.data; // the pixel data of our hidden canvas
       for(var i = 0; i <= data.length - 4; i+=4) { // loop through each pixel (4 at a time because it takes four indexes to repesent one pixel (r,g,b,a))
         var isRed = (data[i] == 255 && !data[i+1] && !data[i+2]), // is the pixel solid red?
         isGreen = (!data[i] && data[i+1] == 255 && !data[i+2]), // is the pixel solid green?
