@@ -13,11 +13,33 @@ var settings = require('./settings');
 var FlappyBird = function() {
   var that = this;
 
+  this.gameOver = false;
+  this.score = 0;
+
   this.entities = [new bird.Bird()];
   this.graphics = new graphicsSystem.GraphicsSystem(this.entities);
   this.physics = new physicsSystem.PhysicsSystem(this.entities);
   this.input = new inputSystem.InputSystem(this.entities);
   this.pipes = new pipeSystem.PipeSystem(this.entities);
+
+  this.pipes.on('passed',function(score){
+    that.score = score;
+    if(!that.gameOver) console.log(score);
+  });
+
+  this.graphics.on('collision',function(){
+    if(!that.gameOver) {
+      console.log('gameOver you got ' + that.score);
+    }
+    that.gameOver = true;
+
+    if(that.gameOver) {
+      that.graphics.pause();
+      that.physics.pause();
+      that.pipes.pause();
+    }
+
+  });
 
   this.input.on('visibilitychange',function(visible){
     console.log('visibilitychange',visible);
@@ -40,8 +62,6 @@ var FlappyBird = function() {
 
     // update all the references to our entities
     that.entities = that.graphics.entities = that.physics.entities = that.input.entities = that.pipes.entities = entities;
-
-    console.log(that.entities.length,that.graphics.entities.length,that.physics.entities.length,that.input.entities.length,that.pipes.entities.length);
   });
 
 

@@ -1,5 +1,6 @@
 var EventEmitter = require('events');
 var util = require('util');
+var settings = require('../settings');
 
 var InputSystem = function(entities) {
     this.entities = entities;
@@ -30,14 +31,14 @@ InputSystem.prototype.run = function() {
 
 InputSystem.prototype.onClick = function() {
     var bird = this.entities[0];
-    bird.components.physics.velocity.y = 0.4;
+    bird.components.physics.velocity.y = settings.lift;
 };
 
 InputSystem.prototype.onkeydown = function(e) {
 
 	if (e.keyCode ==32) {
 		var bird = this.entities[0];
-		bird.components.physics.velocity.y = 0.4;
+		bird.components.physics.velocity.y = settings.lift;
 	}
 };
 
