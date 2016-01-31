@@ -2,6 +2,14 @@ Math.randomRange = function(min,max) {
   	  return min + (Math.random() * (max-min));
 };
 
+Math.degreesToRadians = function(degrees) {
+  return degrees * Math.PI / 180;
+}
+
+Math.radiansToDegrees = function(radians) {
+  return radians * 180 / Math.PI;
+}
+
 var graphicsSystem = require('./systems/graphics');
 var physicsSystem = require('./systems/physics');
 var inputSystem = require('./systems/input');
