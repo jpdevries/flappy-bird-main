@@ -176,7 +176,7 @@ GraphicsSystem.prototype.tick = function(timestamp) {
 
          // if it ain't red, and it ain't green, and it ain't nothing we got ourselves a hit!
          if(!isRed && !isGreen && !isNothing) collisions++;
-         if(collisions >= settings.collisionAllowance) return true;
+         if(collisions > settings.collisionAllowance) return true;
       }
       return false; // go birdy, it's your birthday!
     })();
