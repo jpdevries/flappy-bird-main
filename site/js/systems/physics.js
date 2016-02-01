@@ -1,8 +1,8 @@
-var collisionSystem = require("./collision");
+
 
 var PhysicsSystem = function(entities) {
     this.entities = entities;
-    this.collisionSystem = new collisionSystem.CollisionSystem(entities);
+    //this.collisionSystem = new collisionSystem.CollisionSystem(entities);
 };
 
 PhysicsSystem.prototype.run = function() {
@@ -17,9 +17,9 @@ PhysicsSystem.prototype.tick = function() {
             continue;
         }
 
-        entity.components.physics.update(1/60);
+        entity.components.physics.update(1/60,i<1); // pass in the framerate and whether or not to accelerate (only acceralte the bird in other words don't accelerate the pipes)
     }
-    this.collisionSystem.tick();
+    //this.collisionSystem.tick();
 };
 
 exports.PhysicsSystem = PhysicsSystem;
