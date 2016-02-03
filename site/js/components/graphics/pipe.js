@@ -1,6 +1,15 @@
+var EventEmitter = require('events');
+var util = require('util');
+var settings = require("../../settings");
+
 var PipeGraphicsComponent = function(entity) {
     this.entity = entity;
+    this.image = document.getElementById("pipe");
+
+    this.emitted = false;
 };
+
+util.inherits(PipeGraphicsComponent, EventEmitter);
 
 PipeGraphicsComponent.prototype.draw = function(context) {
     var position = this.entity.components.physics.position;
@@ -13,13 +22,20 @@ PipeGraphicsComponent.prototype.draw = function(context) {
     context.translate(position.x, position.y);
 
 
+
+    if(position.x < -settings.pipeWidth && !this.emitted) {
+      this.emit('passed',this);
+      this.emitted = true;
+    }
+
+
     if(flip) {
       context.scale(1,-1);
     }
 
-    var image = document.getElementById("pipe");
+    var image = this.image;
 
-    context.drawImage(image, 0, 0, 0.2, 1);
+    context.drawImage(image, 0, 0, settings.pipeWidth, 1);
 
     context.restore();
 

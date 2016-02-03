@@ -1,7 +1,12 @@
-var GraphicsSystem = function(entities) {
+var EventEmitter = require('events');
+var util = require('util');
+var settings = require('../settings');
+
+var GraphicsSystem = function(flappyBird) {
+    this.flappyBird = flappyBird;
     var that = this;
 
-    this.entities = entities;
+    this.entities = flappyBird.entities;
     //Canvas is WHERE we draw to. This part fetches the canvas element.
     this.canvas = document.getElementById('main-canvas');
     this.offcanvas = document.createElement('canvas');
@@ -10,6 +15,12 @@ var GraphicsSystem = function(entities) {
 
     this.showBoundingBox = false;
     this.showCollisionDetection = true;
+
+    this.paused = false;
+
+    this.lastStamp = null;
+
+    this.numerals = document.getElementById("numerals");
 
     var canvas = this.canvas,
     offcanvas = this.offcanvas;
@@ -31,15 +42,23 @@ var GraphicsSystem = function(entities) {
 
         that.calculations.birdSize = canvas.height * .1;
         that.calculations.halfWidth = canvas.width / 2;
+        that.calculations.birdSizeBuffer = that.calculations.birdSize * 1.2; // pad the cut area because we angle the graphic with the "nose dive" effect
     }
 };
+
+util.inherits(GraphicsSystem, EventEmitter);
 
 GraphicsSystem.prototype.run = function() {
     //Run the graphics rendering loop. requestAnimationFrame runs ever 1/60th of a second.
     window.requestAnimationFrame(this.tick.bind(this));
 };
 
-GraphicsSystem.prototype.tick = function() {
+GraphicsSystem.prototype.pause = function() {
+  this.paused = true;
+};
+
+GraphicsSystem.prototype.tick = function(timestamp) {
+
     var that = this; // so we can reference "this" from nested namespaces
 
     var canvas = this.canvas,
@@ -54,8 +73,8 @@ GraphicsSystem.prototype.tick = function() {
     cut = { // the section of the stage we are cutting out. we only take the bounding box of the bird for both our subjects (the bird and the pipes)
       x:that.calculations.halfWidth,
       y:(1-bird.components.physics.position.y)*canvas.height,
-      width:that.calculations.birdSize,
-      height:that.calculations.birdSize
+      width:that.calculations.birdSizeBuffer,
+      height:that.calculations.birdSizeBuffer
     };
 
     // set the hidden canvas to be the same size as the area we cut out for bitmap detection
@@ -149,18 +168,24 @@ GraphicsSystem.prototype.tick = function() {
     var isCollision = (function(){ // does the bird hit the pipes?
       var imgData = offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height),
       data = imgData.data; // the pixel data of our hidden canvas
+      var collisions = 0;
       for(var i = 0; i <= data.length - 4; i+=4) { // loop through each pixel (4 at a time because it takes four indexes to repesent one pixel (r,g,b,a))
         var isRed = (data[i] == 255 && !data[i+1] && !data[i+2]), // is the pixel solid red?
         isGreen = (!data[i] && data[i+1] == 255 && !data[i+2]), // is the pixel solid green?
         isNothing = (data[i] == 0 && data[i+1] == 0 && data[i+2] == 0 && data[i+3] == 0); // is the pixel nothing?
 
          // if it ain't red, and it ain't green, and it ain't nothing we got ourselves a hit!
-         if(!isRed && !isGreen && !isNothing) return true;
+         if(!isRed && !isGreen && !isNothing) collisions++;
+         if(collisions > settings.collisionAllowance) return true;
       }
       return false; // go birdy, it's your birthday!
     })();
 
-    if(isCollision) console.log('collision!');
+    if(isCollision) {
+      console.log('collision!');
+
+      that.emit('collision');
+    }
 
     //Rendering of graphics goes here
     for (var i=0; i<this.entities.length; i++) {
@@ -178,9 +203,59 @@ GraphicsSystem.prototype.tick = function() {
       );
     }
 
-    //Continue the graphics rendering loop.
-    window.requestAnimationFrame(this.tick.bind(this));
+    (function(that){
+      var score = that.flappyBird.score,
+      digits = score.toString().split('');
 
+      if(score && score % settings.freakOutEvery == 0) bird.freakOutOver(score);
+
+      that.context.save();
+
+      that.context.translate(that.calculations.halfWidth - (30 * that.flappyBird.score.toString().length),0);
+
+      for(var i = 0; i < digits.length; i++) {
+        var digitData = (function(int){ // get the pixel data for the given digit
+          var canvas = document.createElement('canvas'),
+          context = canvas.getContext('2d'),
+          int = (typeof(int) == 'undefined') ? 0 : parseInt(int);
+
+          canvas.width = 60;
+          canvas.height = 80;
+
+          context.translate(-60*int,0);
+
+          context.drawImage(document.getElementById("numerals"),0,0,600,80);
+
+          var imgData = context.getImageData(0,0,canvas.width,canvas.height);
+
+          return imgData;
+        })(digits[i]);
+
+        that.context.drawImage(
+          that.dataURLtoImg(
+            that.imgDataToDataURL(digitData)
+          ),
+          i*30,
+          0
+        );
+
+      }
+      that.context.restore();
+    })(this);
+
+    if(settings.displayFPS) {
+      (function(context,lastStamp){
+        var fps = 1000 / (timestamp-lastStamp);
+        context.font = "12px Verdana";
+        context.fillStyle = 'red';
+        context.fillText(fps.toString(),16,that.canvas.height - 16);
+      })(this.context,this.lastStamp);
+    }
+
+    this.lastStamp = timestamp;
+
+    //Continue the graphics rendering loop.
+    if(!this.paused) window.requestAnimationFrame(this.tick.bind(this));
 };
 
 GraphicsSystem.prototype.colorizeImageData = function(imgData,color) {
