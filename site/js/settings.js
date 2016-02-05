@@ -8,3 +8,4 @@ exports.minVerticalVelocity = -1;
 exports.maxVerticalVelocity = 0;
 exports.freakOutEvery = 2;
 exports.displayFPS = true;
+exports.collisionDetectionPerSecond = 12;
