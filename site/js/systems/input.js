@@ -2,6 +2,11 @@ var EventEmitter = require('events');
 var util = require('util');
 var settings = require('../settings');
 
+var flappyBird = require('../flappy_bird');
+
+var game = flappyBird();
+var gamePaused = false;
+
 var InputSystem = function(entities) {
     this.entities = entities;
 
@@ -40,7 +45,24 @@ InputSystem.prototype.onkeydown = function(e) {
 		var bird = this.entities[0];
 		bird.components.physics.velocity.y = settings.lift;
 	}
+  //if 'p' key is pressed, pause the game
+  else if (e.keyCode ==80) {
+    console.log("Pause pressed!");
+    pauseGame();
+  }
 };
+
+//pause game function
+var pauseGame = function () {
+ if (!gamePaused) {
+    game = clearTimeout(game);
+    gamePaused = true;
+ } else if (gamePaused) {
+    game = setTimeout(gameLoop, 1000 / 60);
+    gamePaused = false;
+  }
+};
+
 
 InputSystem.prototype.handleVisibilityChange = function() {
   var hidden;
