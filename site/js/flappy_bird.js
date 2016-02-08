@@ -23,6 +23,7 @@ var FlappyBird = function() {
 
   this.gameOver = false;
   this.score = 0;
+  this.paused = false;
 
   var flappy = new bird.Bird();
   setTimeout(function(){
@@ -77,7 +78,21 @@ var FlappyBird = function() {
     that.entities = that.graphics.entities = that.physics.entities = that.input.entities = that.pipes.entities = entities;
   });
 
-
+  this.input.on('Paused', function(){
+    console.log("Game paused!");
+    this.paused = !this.paused;
+    console.log(this.paused);
+    if (that.paused){
+      that.graphics.pause();
+      that.physics.pause();
+      that.pipes.pause();
+    }
+    else {
+      that.graphics.run();
+      that.physics.run();
+      that.pipes.run();
+    }
+  });
 };
 
 FlappyBird.prototype.run = function() {

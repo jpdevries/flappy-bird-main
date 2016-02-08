@@ -21,6 +21,7 @@ PipeSystem.prototype.pause = function() {
     window.clearInterval(this.interval);
     this.interval = null;
   }
+  console.log("Pipe system paused!");
 }
 
 PipeSystem.prototype.tick = function() {

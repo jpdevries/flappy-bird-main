@@ -60,7 +60,8 @@ GraphicsSystem.prototype.run = function() {
 };
 
 GraphicsSystem.prototype.pause = function() {
-  this.paused = true;
+  clearInterval(this.interval);
+  console.log("Graphics system paused!");
 };
 
 GraphicsSystem.prototype.tock = function() {
