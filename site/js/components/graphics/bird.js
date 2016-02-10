@@ -15,21 +15,20 @@ var BirdGraphicsComponent = function(entity) {
 
     this.radians = 0;
 
-    this.interval = window.setInterval(this.flap.bind(this),240);
+    this.interval = window.setInterval(this.flap.bind(this),120);
 };
 
 BirdGraphicsComponent.prototype.flap = function() {
   this.flapIndex += 1;
   if(this.flapIndex >= this.images.length) this.flapIndex = 0;
+
 };
 
 BirdGraphicsComponent.prototype.freakOut = function() {
   if(this.freakingOut) return;
   var that = this;
   this.freakingOut = true;
-  console.log('freaking out');
   setTimeout(function(){
-    console.log('stop freaking out');
     that.freakingOut = false;
   },240);
 }

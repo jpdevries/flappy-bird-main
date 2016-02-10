@@ -13,7 +13,7 @@ var Pipe = function(position,flip, id) {
     physics.position.x = position.x;
 		physics.position.y = position.y;
 
-		physics.velocity.x = -0.5;
+		physics.velocity.x = -0.4;
 
 		var graphics = new graphicsComponent.PipeGraphicsComponent(this);
 

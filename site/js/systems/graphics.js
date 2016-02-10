@@ -16,7 +16,7 @@ var GraphicsSystem = function(flappyBird) {
     this.interval = null;
 
     this.showBoundingBox = false;
-    this.showCollisionDetection = true;
+    this.showCollisionDetection = false;
 
     this.paused = false;
 
@@ -26,12 +26,6 @@ var GraphicsSystem = function(flappyBird) {
 
     var canvas = this.canvas,
     offcanvas = this.offcanvas;
-
-    document.body.addEventListener('keydown',function(e){ // when the space bar is pressed
-      that.showCollisionDetection = !that.showCollisionDetection;
-    });
-
-    console.log('Pro tip: press spacebar to toggle the visibility of the hidden collision detection canvas');
 
     that.calculations = {};
     handleResize();
@@ -61,7 +55,6 @@ GraphicsSystem.prototype.run = function() {
 
 GraphicsSystem.prototype.pause = function() {
   clearInterval(this.interval);
-  console.log("Graphics system paused!");
 };
 
 GraphicsSystem.prototype.tock = function() {
@@ -169,11 +162,8 @@ GraphicsSystem.prototype.tock = function() {
   })();
 
   if(isCollision) {
-    console.log('collision!');
-
     that.emit('collision');
   }
-
 }
 
 GraphicsSystem.prototype.tick = function(timestamp) {
@@ -202,12 +192,6 @@ GraphicsSystem.prototype.tick = function(timestamp) {
     // save our contexts before we apply custom transformation coordinates
     this.context.save();
 
-
-    if(this.showBoundingBox) { // optionally show the bouding box we cut out for collision detection
-      this.context.fillStyle = '#649fd9';
-      this.context.fillRect(cut.x,cut.y,cut.width,cut.height);
-    }
-
     // use our custom transformation and coordinates system (remember that getImageData ignores this)
     this.context.translate(that.calculations.halfWidth, this.canvas.height);
     this.context.scale(this.canvas.height, -this.canvas.height);
@@ -219,14 +203,6 @@ GraphicsSystem.prototype.tick = function(timestamp) {
     }
 
     this.context.restore();
-
-    if(this.showCollisionDetection) {
-      this.context.putImageData( // if requested, show the hidden collisision detection in the top left
-        offcanvasContext.getImageData(0,0,offcanvas.width,offcanvas.height),
-        0,
-        0
-      );
-    }
 
     (function(that){
       var score = that.flappyBird.score,

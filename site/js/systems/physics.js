@@ -10,7 +10,6 @@ PhysicsSystem.prototype.run = function() {
 
 PhysicsSystem.prototype.pause = function() {
   clearInterval(this.interval);
-  console.log("Physics system paused!");
 };
 
 PhysicsSystem.prototype.tick = function() {

@@ -25,11 +25,11 @@ gulp.task('jshint', function() {
 });
 
 // Compile Sass task
-/*gulp.task('sass', function() {
+gulp.task('sass', function() {
   return gulp.src('site/scss/*.scss')
     .pipe(sass())
     .pipe(gulp.dest('site/css'));
-});*/
+});
 
 // Minify index
 /*gulp.task('html', function() {

@@ -42,22 +42,9 @@ InputSystem.prototype.onkeydown = function(e) {
 	}
   //if 'p' key is pressed, pause the game
   else if (e.keyCode ==80) {
-    console.log("Pause pressed!");
     this.emit('Paused');
   }
 };
-
-//pause game function
-/*var pauseGame = function () {
- if (!gamePaused) {
-    game = clearTimeout(game);
-    gamePaused = true;
- } else if (gamePaused) {
-    game = setTimeout(gameLoop, 1000 / 60);
-    gamePaused = false;
-  }
-};*/
-
 
 InputSystem.prototype.handleVisibilityChange = function() {
   var hidden;

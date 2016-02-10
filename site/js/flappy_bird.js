@@ -41,19 +41,42 @@ var FlappyBird = function() {
     if(!that.gameOver) console.log(score);
   });
 
-  this.graphics.on('collision',function(){
+  this.graphics.on('collision',function(id, visible, hidden){
     if(!that.gameOver) {
-      console.log('gameOver you got ' + that.score);
+      console.log('Game over! You cleared ' + that.score + ' pipes!');
     }
     that.gameOver = true;
+
+    //function to display player's score on the overlay after game over
+    var writeScore = function(){
+      if (that.gameOver = true){
+        return('Score: ' + that.score);
+      }
+    };
+
+    var htmlScore = document.getElementById('score');
+    htmlScore.innerHTML = writeScore();
+
+    //simple function to show the 'game-over' overlay by changing display property
+    var show = function (element) {
+      element.style.display = 'block';
+    };
 
     if(that.gameOver) {
       that.graphics.pause();
       that.physics.pause();
       that.pipes.pause();
+      //call show function if game over
+      //show(document.getElementById('game-over'));
+      $("#game-over").delay(500).fadeIn(2000);
     }
-
   });
+
+  var button = document.getElementById("#replay");
+  button.onclick = function(){
+    console.log("Replay button clicked!");
+    location.reload(true);
+  };
 
   this.input.on('visibilitychange',function(visible){
     console.log('visibilitychange',visible);
@@ -78,22 +101,22 @@ var FlappyBird = function() {
     that.entities = that.graphics.entities = that.physics.entities = that.input.entities = that.pipes.entities = entities;
   });
 
-  this.input.on('Paused', function(){
-    console.log("Game paused!");
+  this.input.on('Paused', this.handlePaused.bind(this));
+};
+
+FlappyBird.prototype.handlePaused = function() {
     this.paused = !this.paused;
-    console.log(this.paused);
-    if (that.paused){
-      that.graphics.pause();
-      that.physics.pause();
-      that.pipes.pause();
+    if (this.paused){
+      this.graphics.pause();
+      this.physics.pause();
+      this.pipes.pause();
     }
     else {
-      that.graphics.run();
-      that.physics.run();
-      that.pipes.run();
+      this.graphics.run();
+      this.physics.run();
+      this.pipes.run();
     }
-  });
-};
+  };
 
 FlappyBird.prototype.run = function() {
     this.graphics.run();

@@ -1,4 +1,4 @@
-html, body {
+/*html, body {
 	margin: 0;
 	padding: 0;
 	height: 100vh;
@@ -17,4 +17,13 @@ html, body {
 	left:0;
 
 	background:#649fd9;
+}*/
+
+.overlay {
+	height: 100%;
+	width: 100%
+	color: #fff;
+	background: #e74c3c;
+	position: absolute;
+	display: none;
 }
