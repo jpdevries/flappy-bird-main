@@ -15,14 +15,17 @@ var PhysicsComponent = function(entity) {
     };
 };
 
-PhysicsComponent.prototype.update = function(delta,accelerate) {
+PhysicsComponent.prototype.update = function(delta,accelerate,position) {
+    position = (typeof(position) == 'undefined') ? true : position;
     if(accelerate) {
       this.velocity.x += this.acceleration.x * delta;
       this.velocity.y += this.acceleration.y * delta;
     }
 
-    this.position.x += this.velocity.x * delta;
-    this.position.y += this.velocity.y * delta;
+    if(position) {
+      this.position.x += this.velocity.x * delta;
+      this.position.y += this.velocity.y * delta;
+    }
 };
 
 exports.PhysicsComponent = PhysicsComponent;

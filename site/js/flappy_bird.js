@@ -26,9 +26,7 @@ var FlappyBird = function() {
   this.paused = false;
 
   var flappy = new bird.Bird();
-  setTimeout(function(){
-    flappy.freakOutOver(0);
-  },200);
+
 
   this.entities = [flappy];
   this.graphics = new graphicsSystem.GraphicsSystem(this);
@@ -103,7 +101,14 @@ var FlappyBird = function() {
   this.input.on('Paused', this.handlePaused.bind(this));
 
   this.input.on('Started', function(){
-    console.log("autopilot is off!");
+    that.entities[0].stopHovering();
+
+    that.physics.justBird = false;
+    that.pipes.run();
+
+    setTimeout(function(){
+      flappy.freakOutOver(0);
+    },200);
   });
 };
 
@@ -123,9 +128,8 @@ FlappyBird.prototype.handlePaused = function() {
 
 FlappyBird.prototype.run = function() {
     this.graphics.run();
-    this.physics.run();
     this.input.run();
-    this.pipes.run();
+    this.physics.run();
 };
 
 exports.FlappyBird = FlappyBird;

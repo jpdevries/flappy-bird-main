@@ -1087,16 +1087,19 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     //Restore transformation state back to what it was last time context.save was called.
     context.restore();
 
-    if(!this.freakingOut) {
-        this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
-        this.radians -= Math.degreesToRadians(30);
-    } else {
-      this.radians += Math.degreesToRadians(-45);
+    if(!this.entity.hovering) {
+      if(!this.freakingOut) {
+          this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
+          this.radians -= Math.degreesToRadians(30);
+      } else {
+        this.radians += Math.degreesToRadians(-45);
+      }
     }
 
 };
 
 exports.BirdGraphicsComponent = BirdGraphicsComponent;
+
 },{"../../settings":13}],7:[function(require,module,exports){
 var EventEmitter = require('events');
 var util = require('util');
@@ -1159,14 +1162,17 @@ var PhysicsComponent = function(entity) {
     };
 };
 
-PhysicsComponent.prototype.update = function(delta,accelerate) {
+PhysicsComponent.prototype.update = function(delta,accelerate,position) {
+    position = (typeof(position) == 'undefined') ? true : position;
     if(accelerate) {
       this.velocity.x += this.acceleration.x * delta;
       this.velocity.y += this.acceleration.y * delta;
     }
 
-    this.position.x += this.velocity.x * delta;
-    this.position.y += this.velocity.y * delta;
+    if(position) {
+      this.position.x += this.velocity.x * delta;
+      this.position.y += this.velocity.y * delta;
+    }
 };
 
 exports.PhysicsComponent = PhysicsComponent;
@@ -1184,13 +1190,32 @@ var Bird = function() {
     var graphics = new graphicsComponent.BirdGraphicsComponent(this);
 
     this.scores = [];
+    this.t = 0;
+    this.freq = 0.0375;
+    this.distance = 0.05;
+    this.hovering = true;
 
     this.components = {
     	physics: physics,
     	graphics: graphics
-
     };
+
+    window.requestAnimationFrame(this.tick.bind(this));
 };
+
+Bird.prototype.tick = function() {
+
+  this.t += this.freq;
+
+  this.components.physics.position.y = 0.5 + (Math.sin(this.t) * this.distance);
+
+  if(this.hovering) window.requestAnimationFrame(this.tick.bind(this));
+}
+
+Bird.prototype.stopHovering = function() {
+  this.hovering = false;
+  //this.components.physics.position.y = 0.5;
+}
 
 Bird.prototype.freakOutOver = function(score) {
   var scores = this.scores;
@@ -1206,6 +1231,7 @@ Bird.prototype.freakOutOver = function(score) {
 }
 
 exports.Bird = Bird;
+
 },{"../components/graphics/bird":6,"../components/physics/physics":8,"../settings":13}],10:[function(require,module,exports){
 var graphicsComponent = require("../components/graphics/pipe");
 var physicsComponent = require("../components/physics/physics");
@@ -1269,9 +1295,7 @@ var FlappyBird = function() {
   this.paused = false;
 
   var flappy = new bird.Bird();
-  setTimeout(function(){
-    flappy.freakOutOver(0);
-  },200);
+
 
   this.entities = [flappy];
   this.graphics = new graphicsSystem.GraphicsSystem(this);
@@ -1347,6 +1371,14 @@ var FlappyBird = function() {
 
   this.input.on('Started', function(){
     console.log("autopilot is off!");
+    that.entities[0].stopHovering();
+
+    that.physics.justBird = false;
+    that.pipes.run();
+
+    setTimeout(function(){
+      flappy.freakOutOver(0);
+    },200);
   });
 };
 
@@ -1366,12 +1398,12 @@ FlappyBird.prototype.handlePaused = function() {
 
 FlappyBird.prototype.run = function() {
     this.graphics.run();
-    this.physics.run();
     this.input.run();
-    this.pipes.run();
+    this.physics.run();
 };
 
 exports.FlappyBird = FlappyBird;
+
 },{"./entities/bird":9,"./settings":13,"./systems/graphics":14,"./systems/input":15,"./systems/physics":16,"./systems/pipe_system":17}],12:[function(require,module,exports){
 var flappyBird = require('./flappy_bird');
 
@@ -1708,6 +1740,7 @@ var InputSystem = function(entities) {
 
     // Canvas is where we get input from
     this.canvas = document.getElementById('main-canvas');
+    this.started = false;
 
     var visibilityChange;
     if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
@@ -1720,15 +1753,6 @@ var InputSystem = function(entities) {
       visibilityChange = "webkitvisibilitychange";
     }
 
-    this.waiting = setInterval(function(){
-      console.log("fake flap!");
-      that.onClick();
-    }, 1000);   
-
-    document.body.addEventListener('click', function(){
-      clearInterval(that.waiting);
-    });
-
     document.addEventListener(visibilityChange, this.handleVisibilityChange.bind(this), false);
 };
 
@@ -1740,19 +1764,19 @@ InputSystem.prototype.run = function() {
 };
 
 InputSystem.prototype.onClick = function() {
+    if(!this.started) {
+      this.emit('Started');
+      this.started = true;
+    }
     var bird = this.entities[0];
     bird.components.physics.velocity.y = settings.lift;
 };
 
 InputSystem.prototype.onkeydown = function(e) {
-  if(!started) {var started = true;
+  if(!this.started) {
     this.emit('Started');
-    console.log(started);
-    var started = true;
+    this.started = true;
   }
-  
-
-  clearInterval(this.waiting);
 
 	if (e.keyCode ==32) {
 		var bird = this.entities[0];
@@ -1786,10 +1810,12 @@ InputSystem.prototype.handleVisibilityChange = function() {
 };
 
 exports.InputSystem = InputSystem;
+
 },{"../settings":13,"events":1,"util":5}],16:[function(require,module,exports){
 var PhysicsSystem = function(entities) {
     this.entities = entities;
     this.interval = null;
+    this.justBird = true;
 };
 
 PhysicsSystem.prototype.run = function() {
@@ -1802,17 +1828,19 @@ PhysicsSystem.prototype.pause = function() {
 };
 
 PhysicsSystem.prototype.tick = function() {
-    for (var i=0; i<this.entities.length; i++) {
+  //console.log('pock',this.entities);
+    for (var i=0; i < ((this.justBird) ? 1 : this.entities.length); i++) {
         var entity = this.entities[i];
         if (!'physics' in entity.components) {
             continue;
         }
 
-        entity.components.physics.update(1/60,i<1); // pass in the framerate and whether or not to accelerate (only acceralte the bird in other words don't accelerate the pipes)
+        entity.components.physics.update(1/60,i<1,!this.justBird); // pass in the framerate and whether or not to accelerate (only acceralte the bird in other words don't accelerate the pipes)
     }
 };
 
 exports.PhysicsSystem = PhysicsSystem;
+
 },{}],17:[function(require,module,exports){
 var pipe = require('../entities/pipe');
 var EventEmitter = require('events');

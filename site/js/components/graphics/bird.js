@@ -71,11 +71,13 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     //Restore transformation state back to what it was last time context.save was called.
     context.restore();
 
-    if(!this.freakingOut) {
-        this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
-        this.radians -= Math.degreesToRadians(30);
-    } else {
-      this.radians += Math.degreesToRadians(-45);
+    if(!this.entity.hovering) {
+      if(!this.freakingOut) {
+          this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
+          this.radians -= Math.degreesToRadians(30);
+      } else {
+        this.radians += Math.degreesToRadians(-45);
+      }
     }
 
 };
