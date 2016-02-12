@@ -4,7 +4,7 @@ var settings = require("../settings");
 
 var Bird = function() {
     var physics = new physicsComponent.PhysicsComponent(this);
-    physics.position.y = 0.5;
+    physics.position.y = 0.50;
     physics.acceleration.y = -settings.gravity || -0.75;
 
     var graphics = new graphicsComponent.BirdGraphicsComponent(this);

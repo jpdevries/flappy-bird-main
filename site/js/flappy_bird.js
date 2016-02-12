@@ -24,6 +24,7 @@ var FlappyBird = function() {
   this.gameOver = false;
   this.score = 0;
   this.paused = false;
+  this.autopilotEnabled = true;
 
   var flappy = new bird.Bird();
   setTimeout(function(){
@@ -74,7 +75,6 @@ var FlappyBird = function() {
 
   var button = document.getElementById("#replay");
   button.onclick = function(){
-    console.log("Replay button clicked!");
     location.reload(true);
   };
 
@@ -102,6 +102,21 @@ var FlappyBird = function() {
   });
 
   this.input.on('Paused', this.handlePaused.bind(this));
+
+  var autoPilot = function() {
+    this.graphics.pause();
+    this.physics.pause();
+    this.pipes.pause();
+  };
+
+  if (this.autopilotEnabled = true) {
+    autoPilot();
+  }
+
+  this.input.on('Started', function(){
+    autoPilot(){return false};
+    console.log("autopilot is off!");
+  });
 };
 
 FlappyBird.prototype.handlePaused = function() {

@@ -73,6 +73,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
 
     if(!this.freakingOut) {
         this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
+        this.radians -= Math.degreesToRadians(30);
     } else {
       this.radians += Math.degreesToRadians(-45);
     }

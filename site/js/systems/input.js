@@ -2,8 +2,11 @@ var EventEmitter = require('events');
 var util = require('util');
 var settings = require('../settings');
 
+var started = false;
+
 var InputSystem = function(entities) {
     this.entities = entities;
+    var that = this;
 
     // Canvas is where we get input from
     this.canvas = document.getElementById('main-canvas');
@@ -18,6 +21,15 @@ var InputSystem = function(entities) {
     } else if (typeof document.webkitHidden !== "undefined") {
       visibilityChange = "webkitvisibilitychange";
     }
+
+    this.waiting = setInterval(function(){
+      console.log("fake flap!");
+      that.onClick();
+    }, 1000);   
+
+    document.body.addEventListener('click', function(){
+      clearInterval(that.waiting);
+    });
 
     document.addEventListener(visibilityChange, this.handleVisibilityChange.bind(this), false);
 };
@@ -35,6 +47,13 @@ InputSystem.prototype.onClick = function() {
 };
 
 InputSystem.prototype.onkeydown = function(e) {
+  if(!started) {var started = true;
+    this.emit('Started');
+    console.log(started);
+  }
+  
+
+  clearInterval(this.waiting);
 
 	if (e.keyCode ==32) {
 		var bird = this.entities[0];
@@ -45,6 +64,8 @@ InputSystem.prototype.onkeydown = function(e) {
     this.emit('Paused');
   }
 };
+
+
 
 InputSystem.prototype.handleVisibilityChange = function() {
   var hidden;
