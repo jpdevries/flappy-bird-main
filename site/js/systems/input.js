@@ -50,6 +50,7 @@ InputSystem.prototype.onkeydown = function(e) {
   if(!started) {var started = true;
     this.emit('Started');
     console.log(started);
+    var started = true;
   }
   
 
