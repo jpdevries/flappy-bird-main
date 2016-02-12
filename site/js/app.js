@@ -1056,7 +1056,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     context.save();
 
     //Move the canvas to the x & y cordinates defined in position variable.
-    context.translate(position.x, position.y);
+    context.translate(position.x-settings.birdRadius/2, position.y);
 
     context.scale(-1, 1);
     context.rotate(Math.PI);
