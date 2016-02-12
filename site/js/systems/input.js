@@ -10,6 +10,7 @@ var InputSystem = function(entities) {
 
     // Canvas is where we get input from
     this.canvas = document.getElementById('main-canvas');
+    this.started = false;
 
     var visibilityChange;
     if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
@@ -22,15 +23,6 @@ var InputSystem = function(entities) {
       visibilityChange = "webkitvisibilitychange";
     }
 
-    this.waiting = setInterval(function(){
-      console.log("fake flap!");
-      that.onClick();
-    }, 1000);   
-
-    document.body.addEventListener('click', function(){
-      clearInterval(that.waiting);
-    });
-
     document.addEventListener(visibilityChange, this.handleVisibilityChange.bind(this), false);
 };
 
@@ -42,19 +34,19 @@ InputSystem.prototype.run = function() {
 };
 
 InputSystem.prototype.onClick = function() {
+    if(!this.started) {
+      this.emit('Started');
+      this.started = true;
+    }
     var bird = this.entities[0];
     bird.components.physics.velocity.y = settings.lift;
 };
 
 InputSystem.prototype.onkeydown = function(e) {
-  if(!started) {var started = true;
+  if(!this.started) {
     this.emit('Started');
-    console.log(started);
-    var started = true;
+    this.started = true;
   }
-  
-
-  clearInterval(this.waiting);
 
 	if (e.keyCode ==32) {
 		var bird = this.entities[0];
