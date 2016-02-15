@@ -1217,6 +1217,10 @@ Bird.prototype.stopHovering = function() {
   //this.components.physics.position.y = 0.5;
 }
 
+Bird.prototype.freakOut = function() {
+  this.components.graphics.freakOut();
+}
+
 Bird.prototype.freakOutOver = function(score) {
   var scores = this.scores;
 
@@ -1388,9 +1392,8 @@ var FlappyBird = function() {
 
   this.input.on('FlappyFreakout', function(){
     console.log("I'm doing a backflip!");
-    flappy.freakOutOver();
+    flappy.freakOut();
   });
-
 };
 
 FlappyBird.prototype.handlePaused = function() {

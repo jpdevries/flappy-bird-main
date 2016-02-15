@@ -119,7 +119,7 @@ var FlappyBird = function() {
 
   this.input.on('FlappyFreakout', function(){
     console.log("I'm doing a backflip!");
-    flappy.freakOutOver();
+    flappy.freakOut();
   });
 };
 
