@@ -121,7 +121,6 @@ var FlappyBird = function() {
     console.log("I'm doing a backflip!");
     flappy.freakOutOver();
   });
-
 };
 
 FlappyBird.prototype.handlePaused = function() {

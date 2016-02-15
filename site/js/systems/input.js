@@ -29,7 +29,7 @@ var InputSystem = function(entities) {
 util.inherits(InputSystem, EventEmitter);
 
 InputSystem.prototype.run = function() {
-    document.body.addEventListener('click', this.onClick.bind(this));
+    this.canvas.addEventListener('click', this.onClick.bind(this));
     document.body.addEventListener('keydown', this.onkeydown.bind(this));
 };
 
