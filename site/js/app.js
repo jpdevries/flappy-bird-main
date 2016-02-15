@@ -1056,7 +1056,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     context.save();
 
     //Move the canvas to the x & y cordinates defined in position variable.
-    context.translate(position.x, position.y);
+    context.translate(position.x -settings.birdRadius/2, position.y);
 
     context.scale(-1, 1);
     context.rotate(Math.PI);
@@ -1090,7 +1090,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     if(!this.entity.hovering) {
       if(!this.freakingOut) {
           this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
-          this.radians -= Math.degreesToRadians(30);
+              this.radians -= Math.degreesToRadians(30);
       } else {
         this.radians += Math.degreesToRadians(-45);
       }
@@ -1324,6 +1324,12 @@ var FlappyBird = function() {
     var htmlScore = document.getElementById('score');
     htmlScore.innerHTML = writeScore();
 
+    //Display game controls when "How to Play" button is clicked
+    var button = document.getElementById("#howtoplay");
+    button.onclick = function(){
+    console.log("Clicked!");
+  };
+
     //simple function to show the 'game-over' overlay by changing display property
     var show = function (element) {
       element.style.display = 'block';
@@ -1370,7 +1376,6 @@ var FlappyBird = function() {
   this.input.on('Paused', this.handlePaused.bind(this));
 
   this.input.on('Started', function(){
-    console.log("autopilot is off!");
     that.entities[0].stopHovering();
 
     that.physics.justBird = false;
@@ -1380,6 +1385,12 @@ var FlappyBird = function() {
       flappy.freakOutOver(0);
     },200);
   });
+
+  this.input.on('FlappyFreakout', function(){
+    console.log("I'm doing a backflip!");
+    flappy.freakOutOver();
+  });
+
 };
 
 FlappyBird.prototype.handlePaused = function() {
@@ -1785,6 +1796,10 @@ InputSystem.prototype.onkeydown = function(e) {
   //if 'p' key is pressed, pause the game
   else if (e.keyCode ==80) {
     this.emit('Paused');
+  }
+  //make Flappy do a backflip when you hit the 'f' key
+  else if (e.keyCode ==70){
+    this.emit('FlappyFreakout');
   }
 };
 

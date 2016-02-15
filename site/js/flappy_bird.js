@@ -55,6 +55,12 @@ var FlappyBird = function() {
     var htmlScore = document.getElementById('score');
     htmlScore.innerHTML = writeScore();
 
+    //Display game controls when "How to Play" button is clicked
+    var button = document.getElementById("#howtoplay");
+    button.onclick = function(){
+    console.log("Clicked!");
+  };
+
     //simple function to show the 'game-over' overlay by changing display property
     var show = function (element) {
       element.style.display = 'block';
@@ -110,6 +116,12 @@ var FlappyBird = function() {
       flappy.freakOutOver(0);
     },200);
   });
+
+  this.input.on('FlappyFreakout', function(){
+    console.log("I'm doing a backflip!");
+    flappy.freakOutOver();
+  });
+
 };
 
 FlappyBird.prototype.handlePaused = function() {

@@ -40,7 +40,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     context.save();
 
     //Move the canvas to the x & y cordinates defined in position variable.
-    context.translate(position.x, position.y);
+    context.translate(position.x -settings.birdRadius/2, position.y);
 
     context.scale(-1, 1);
     context.rotate(Math.PI);
@@ -74,7 +74,7 @@ BirdGraphicsComponent.prototype.draw = function(context) {
     if(!this.entity.hovering) {
       if(!this.freakingOut) {
           this.radians = Math.degreesToRadians(verticalVelocity * noseDive);
-          this.radians -= Math.degreesToRadians(30);
+              this.radians -= Math.degreesToRadians(30);
       } else {
         this.radians += Math.degreesToRadians(-45);
       }

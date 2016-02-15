@@ -56,6 +56,10 @@ InputSystem.prototype.onkeydown = function(e) {
   else if (e.keyCode ==80) {
     this.emit('Paused');
   }
+  //make Flappy do a backflip when you hit the 'f' key
+  else if (e.keyCode ==70){
+    this.emit('FlappyFreakout');
+  }
 };
 
 
