@@ -208,7 +208,7 @@ GraphicsSystem.prototype.tick = function(timestamp) {
       var score = that.flappyBird.score,
       digits = score.toString().split('');
 
-      if(score && score % settings.freakOutEvery == 0) bird.freakOutOver(score);
+      //if(score && score % settings.freakOutEvery == 0) bird.freakOutOver(score);
 
       that.context.save();
 
@@ -283,7 +283,7 @@ GraphicsSystem.prototype.imgDataToDataURL = function(imgData) {
   return c.toDataURL();
 }
 
-GraphicsSystem.prototype.dataURLtoImg = function(dataURL) {
+GraphicsSystem.prototype.dataURLtoImg = 2function(dataURL) {
     var img = new Image();
 
     img.src = dataURL;

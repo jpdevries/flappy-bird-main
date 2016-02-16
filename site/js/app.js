@@ -1307,6 +1307,19 @@ var FlappyBird = function() {
   this.input = new inputSystem.InputSystem(this.entities);
   this.pipes = new pipeSystem.PipeSystem(this.entities);
 
+  //Display game instructions when "How to Play" button is clicked
+  var howToButton = document.getElementById('howtoplay');
+  howToButton.onclick = function(){
+    $('#instructions').fadeIn(500);
+  };
+
+  //Close game instructions when "Got it!" button is clicked
+  var gotItButton = document.getElementById('gotit');
+  gotItButton.onclick = function(){
+    console.log("I'm closing!");
+    $('#instructions').fadeOut(500);
+  }
+
   this.pipes.on('passed',function(score){
     that.score = score;
     if(!that.gameOver) console.log(score);
@@ -1328,29 +1341,16 @@ var FlappyBird = function() {
     var htmlScore = document.getElementById('score');
     htmlScore.innerHTML = writeScore();
 
-    //Display game controls when "How to Play" button is clicked
-    var button = document.getElementById("#howtoplay");
-    button.onclick = function(){
-    console.log("Clicked!");
-  };
-
-    //simple function to show the 'game-over' overlay by changing display property
-    var show = function (element) {
-      element.style.display = 'block';
-    };
-
     if(that.gameOver) {
       that.graphics.pause();
       that.physics.pause();
       that.pipes.pause();
-      //call show function if game over
-      //show(document.getElementById('game-over'));
-      $("#game-over").delay(500).fadeIn(2000);
+      $("#game-over").fadeIn(500);
     }
   });
 
-  var button = document.getElementById("#replay");
-  button.onclick = function(){
+  var replaybutton = document.getElementById('replay');
+  replaybutton.onclick = function(){
     location.reload(true);
   };
 
@@ -1390,9 +1390,12 @@ var FlappyBird = function() {
     },200);
   });
 
+  //Listen for the 'f' key being pressed, do a backflip and add 1 to the score
   this.input.on('FlappyFreakout', function(){
-    console.log("I'm doing a backflip!");
     flappy.freakOut();
+    if (that.score >= 1) {
+    that.score += 1;
+    }
   });
 };
 
