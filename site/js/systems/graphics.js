@@ -283,7 +283,7 @@ GraphicsSystem.prototype.imgDataToDataURL = function(imgData) {
   return c.toDataURL();
 }
 
-GraphicsSystem.prototype.dataURLtoImg = 2function(dataURL) {
+GraphicsSystem.prototype.dataURLtoImg = function(dataURL) {
     var img = new Image();
 
     img.src = dataURL;

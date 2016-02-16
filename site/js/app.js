@@ -1652,7 +1652,7 @@ GraphicsSystem.prototype.tick = function(timestamp) {
       var score = that.flappyBird.score,
       digits = score.toString().split('');
 
-      if(score && score % settings.freakOutEvery == 0) bird.freakOutOver(score);
+      //if(score && score % settings.freakOutEvery == 0) bird.freakOutOver(score);
 
       that.context.save();
 
