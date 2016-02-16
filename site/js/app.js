@@ -1327,10 +1327,9 @@ var FlappyBird = function() {
 
   this.graphics.on('collision',function(id, visible, hidden){
     if(!that.gameOver) {
-      console.log('Game over! You cleared ' + that.score + ' pipes!');
+      that.gameOver = true;
     }
-    that.gameOver = true;
-
+    
     //function to display player's score on the overlay after game over
     var writeScore = function(){
       if (that.gameOver = true){
@@ -1345,7 +1344,7 @@ var FlappyBird = function() {
       that.graphics.pause();
       that.physics.pause();
       that.pipes.pause();
-      $("#game-over").fadeIn(500);
+      $("#game-over").fadeIn(100);
     }
   });
 
@@ -1605,7 +1604,33 @@ GraphicsSystem.prototype.tock = function() {
     return false; // go birdy, it's your birthday!
   })();
 
-  if(isCollision) {
+  //function to determine if the bird goes off the top or bottom of the canvas
+  var tooHighText = function(){
+    return("Oh, no! Flappy flew too high and died!");
+  };
+
+  var tooLowText = function(){
+    return("Oh, no! Flappy flew too low and died!");
+  };
+
+  var offCanvas = (function(){
+    if(bird.components.physics.position.y >= 1) {
+      var tooHigh = document.getElementById("game-over-text");
+      tooHigh.innerHTML = tooHighText();
+      return true;
+    }
+    else if(bird.components.physics.position.y <= (0 + settings.birdRadius)) {
+      console.log("I hit the bottom of the canvas and died!");
+      var tooLow = document.getElementById("game-over-text");
+      tooLow.innerHTML = tooLowText();
+      return true;
+    }
+    else {return false;
+    }
+  })();
+
+  //If either isCollision or offCanvas function return true, emit 'collision' and end game!
+  if(isCollision || offCanvas) {
     that.emit('collision');
   }
 }

@@ -54,10 +54,9 @@ var FlappyBird = function() {
 
   this.graphics.on('collision',function(id, visible, hidden){
     if(!that.gameOver) {
-      console.log('Game over! You cleared ' + that.score + ' pipes!');
+      that.gameOver = true;
     }
-    that.gameOver = true;
-
+    
     //function to display player's score on the overlay after game over
     var writeScore = function(){
       if (that.gameOver = true){
@@ -72,7 +71,7 @@ var FlappyBird = function() {
       that.graphics.pause();
       that.physics.pause();
       that.pipes.pause();
-      $("#game-over").fadeIn(500);
+      $("#game-over").fadeIn(100);
     }
   });
 

@@ -161,7 +161,33 @@ GraphicsSystem.prototype.tock = function() {
     return false; // go birdy, it's your birthday!
   })();
 
-  if(isCollision) {
+  //function to determine if the bird goes off the top or bottom of the canvas
+  var tooHighText = function(){
+    return("Oh, no! Flappy flew too high and died!");
+  };
+
+  var tooLowText = function(){
+    return("Oh, no! Flappy flew too low and died!");
+  };
+
+  var offCanvas = (function(){
+    if(bird.components.physics.position.y >= 1) {
+      var tooHigh = document.getElementById("game-over-text");
+      tooHigh.innerHTML = tooHighText();
+      return true;
+    }
+    else if(bird.components.physics.position.y <= (0 + settings.birdRadius)) {
+      console.log("I hit the bottom of the canvas and died!");
+      var tooLow = document.getElementById("game-over-text");
+      tooLow.innerHTML = tooLowText();
+      return true;
+    }
+    else {return false;
+    }
+  })();
+
+  //If either isCollision or offCanvas function return true, emit 'collision' and end game!
+  if(isCollision || offCanvas) {
     that.emit('collision');
   }
 }
