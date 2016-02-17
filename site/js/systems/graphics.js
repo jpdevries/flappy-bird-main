@@ -161,7 +161,7 @@ GraphicsSystem.prototype.tock = function() {
     return false; // go birdy, it's your birthday!
   })();
 
-  //function to determine if the bird goes off the top or bottom of the canvas
+  
   var tooHighText = function(){
     return("Oh, no! Flappy flew too high and died!");
   };
@@ -170,14 +170,14 @@ GraphicsSystem.prototype.tock = function() {
     return("Oh, no! Flappy flew too low and died!");
   };
 
+  //function to determine if the bird goes off the top or bottom of the canvas
   var offCanvas = (function(){
     if(bird.components.physics.position.y >= 1) {
       var tooHigh = document.getElementById("game-over-text");
       tooHigh.innerHTML = tooHighText();
       return true;
     }
-    else if(bird.components.physics.position.y <= (0 + settings.birdRadius)) {
-      console.log("I hit the bottom of the canvas and died!");
+    else if(bird.components.physics.position.y <= 0 + settings.birdRadius){
       var tooLow = document.getElementById("game-over-text");
       tooLow.innerHTML = tooLowText();
       return true;
@@ -234,7 +234,7 @@ GraphicsSystem.prototype.tick = function(timestamp) {
       var score = that.flappyBird.score,
       digits = score.toString().split('');
 
-      //if(score && score % settings.freakOutEvery == 0) bird.freakOutOver(score);
+      if(score && score % settings.freakOutEvery == 0) bird.freakOutOver(score);
 
       that.context.save();
 

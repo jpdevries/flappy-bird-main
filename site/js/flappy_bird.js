@@ -43,7 +43,6 @@ var FlappyBird = function() {
   //Close game instructions when "Got it!" button is clicked
   var gotItButton = document.getElementById('gotit');
   gotItButton.onclick = function(){
-    console.log("I'm closing!");
     $('#instructions').fadeOut(500);
   }
 
@@ -71,7 +70,7 @@ var FlappyBird = function() {
       that.graphics.pause();
       that.physics.pause();
       that.pipes.pause();
-      $("#game-over").fadeIn(100);
+      $("#game-over").fadeIn(1   00);
     }
   });
 
@@ -81,7 +80,6 @@ var FlappyBird = function() {
   };
 
   this.input.on('visibilitychange',function(visible){
-    console.log('visibilitychange',visible);
     if(visible) {
       that.graphics.paused = false;
       that.physics.run();
