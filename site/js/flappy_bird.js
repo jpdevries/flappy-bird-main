@@ -47,7 +47,7 @@ var FlappyBird = function() {
   }
 
   this.pipes.on('passed',function(score){
-    that.score = score;
+    that.score += 1;
     if(!that.gameOver) console.log(score);
   });
 
@@ -70,7 +70,7 @@ var FlappyBird = function() {
       that.graphics.pause();
       that.physics.pause();
       that.pipes.pause();
-      $("#game-over").fadeIn(1   00);
+      $("#game-over").fadeIn(100);
     }
   });
 
